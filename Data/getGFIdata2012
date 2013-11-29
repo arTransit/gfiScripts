@@ -1,0 +1,214 @@
+# bash script to extract and load GFI data for Victoria from 2012 to 2013
+# Author: Andrew Ross
+# Date:   2012 March 06
+
+DBFILE=GFI_VICTORIA_2012.db
+FROMDATE="2012-01-01 00:00:00"
+TODATE="2013-01-01 00:00:00"
+LOCATIONIDS="(1,2)"
+
+echo
+echo "Starting..."
+
+##################################################################
+# Load TR
+##################################################################
+
+echo
+echo "Loading TR"
+date
+sqlite3 $DBFILE 'drop table if exists TR;'
+sqlite3 $DBFILE 'drop index if exists I_TR;'
+sqlite3 $DBFILE 'CREATE TABLE "TR" ("LOC_N" integer, "ID" integer, "SEQTR" integer, "TS" varchar(25), "TS_MONTH" integer, "TS_DAY" integer, "TYPE" integer, "BUS" integer, "ROUTE" integer, "N" integer);'
+sqlite3 $DBFILE 'CREATE INDEX "I_TR" ON "TR" ("LOC_N" ASC, "ID" ASC, "SEQTR" ASC, "TS_MONTH" ASC, "TS_DAY" ASC, "TYPE" ASC);'
+
+echo "
+SET ECHO OFF
+SET HEADING OFF
+SET UNDERLINE OFF
+SET COLSEP ','
+SET LINES 32000 PAGES 5
+SET FEEDBACK off
+SELECT tr.loc_n,tr.id,tr.tr_seq SEQTR, TO_CHAR(tr.ts,'YYYY-MM-DD HH24:MI:SS') TS, TO_CHAR(tr.ts,'YYYYMM') TS_MONTH, TO_CHAR(tr.ts,'YYYYMMDD') TS_DAY,
+tr.type, tr.bus,tr.route,tr.n
+FROM tr WHERE tr.ts BETWEEN to_date('$FROMDATE', 'YYYY-MM-DD HH24:MI:SS') AND to_date('$TODATE', 'YYYY-MM-DD HH24:MI:SS') AND tr.loc_n IN $LOCATIONIDS;
+exit
+" | sqlplus guest/guest@GFI | sed -e '
+    1,10d
+    /^$/d
+    /SQL/d
+    s/\t//g
+    /^Disconnected/,$d
+    /^With/,$d
+' | sqlite3  -separator , $DBFILE '.import /dev/stdin TR'
+
+date
+
+
+##################################################################
+# Load TRMISC
+##################################################################
+
+echo
+echo "Loading TRMISC"
+date
+sqlite3 $DBFILE 'drop table if exists TRMISC;'
+sqlite3 $DBFILE 'drop index if exists I_TRMISC;'
+sqlite3 $DBFILE 'CREATE TABLE "TRMISC" ("LOC_N" integer, "ID" integer, "SEQTR" integer, "AMT" float);'
+sqlite3 $DBFILE 'CREATE INDEX "I_TRMISC" ON "TRMISC" ("LOC_N" ASC, "ID" ASC, "SEQTR" ASC);'
+
+echo "
+SET ECHO OFF
+SET HEADING OFF
+SET UNDERLINE OFF
+SET COLSEP ','
+SET LINES 32000 PAGES 5
+SET FEEDBACK off
+SELECT trmisc.loc_n, trmisc.id, trmisc.tr_seq,trmisc.amt 
+FROM trmisc JOIN tr ON tr.loc_n=trmisc.loc_n AND tr.id=trmisc.id AND tr.tr_seq=trmisc.tr_seq 
+WHERE tr.ts BETWEEN to_date('$FROMDATE', 'YYYY-MM-DD HH24:MI:SS') AND to_date('$TODATE', 'YYYY-MM-DD HH24:MI:SS') AND tr.loc_n IN $LOCATIONIDS;
+exit
+" | sqlplus guest/guest@GFI | sed -e '
+    1,10d
+    /^$/d
+    /SQL/d
+    s/\t//g
+    /^Disconnected/,$d
+    /^With/,$d
+' | sqlite3  -separator , $DBFILE '.import /dev/stdin TRMISC'
+
+date
+
+##################################################################
+# Load PPD
+##################################################################
+
+echo
+echo "Loading PPD"
+date
+sqlite3 $DBFILE 'drop table if exists PPD;'
+sqlite3 $DBFILE 'drop index if exists I_PPD;'
+sqlite3 $DBFILE 'CREATE TABLE "PPD" ("LOC_N" integer, "ID" integer, "TR_SEQ" integer, "SEQ" integer, "FS" integer, "TTP" integer, "GRP" integer, "DES" integer, "SC" integer, "AID" integer, "MID" integer, "TPBC" integer, "FLAGS" integer);'
+sqlite3 $DBFILE 'CREATE INDEX "I_PPD" ON "PPD" ("LOC_N" ASC, "ID" ASC, "TR_SEQ" ASC, "SEQ" ASC, "DES" ASC);'
+
+echo "
+SET ECHO OFF
+SET HEADING OFF
+SET UNDERLINE OFF
+SET COLSEP ','
+SET LINES 32000 PAGES 5
+SET FEEDBACK off
+SELECT ppd.loc_n, ppd.id, ppd.tr_seq, ppd.seq, ppd.fs, ppd.ttp, ppd.grp, ppd.des, ppd.sc, ppd.aid, ppd.mid, ppd.tpbc, ppd.flags
+FROM ppd JOIN tr ON tr.loc_n=ppd.loc_n AND tr.id=ppd.id AND tr.tr_seq=ppd.tr_seq 
+WHERE tr.ts BETWEEN to_date('$FROMDATE', 'YYYY-MM-DD HH24:MI:SS') AND to_date('$TODATE', 'YYYY-MM-DD HH24:MI:SS') AND tr.loc_n IN $LOCATIONIDS;
+exit
+" | sqlplus guest/guest@GFI | sed -e '
+    1,10d
+    /^$/d
+    /SQL/d
+    s/\t//g
+    /^Disconnected/,$d
+    /^With/,$d
+' | sqlite3  -separator , $DBFILE '.import /dev/stdin PPD'
+
+date
+
+##################################################################
+# Load ET
+##################################################################
+
+echo
+echo "Loading ET"
+date
+sqlite3 $DBFILE 'drop table if exists ET;'
+sqlite3 $DBFILE 'CREATE TABLE "ET" ("TYPE" integer, "TEXT" text);'
+
+echo "
+SET ECHO OFF
+SET HEADING OFF
+SET UNDERLINE OFF
+SET COLSEP ';'
+SET LINES 32000 PAGES 5
+SET FEEDBACK off
+select type, text from et;
+exit
+" | sqlplus guest/guest@GFI | sed -e '
+    1,10d
+    /^$/d
+    /SQL/d
+    s/\t//g
+    s/,//g
+    s/^[ \t]*//
+    /^Disconnected/,$d
+    /^With/,$d
+'  | sqlite3  -separator ';' $DBFILE '.import /dev/stdin ET'
+
+date
+
+##################################################################
+# Load FARECELL
+##################################################################
+
+echo
+echo
+echo "Loading FARECELL"
+date
+sqlite3 $DBFILE 'drop table if exists FARECELL;'
+sqlite3 $DBFILE 'CREATE TABLE "FARECELL" ("LOC_N" integer, "FS_ID" integer, "FARESET_N" integer, "FARECELL_N" integer, "VALUE" float, "ATTR" integer, "DESCRIPTION" text, "FARECELL_ID" text, "ENABLED_F" char, "INCLUDED_F" char, "T_NDX" integer, "T_ENABLED_F" char, "M_NDX" integer, "M_ENABLED_F" char, "SND1" integer, "SND2" integer, "LED1" integer, "LED2" integer, "FLAGS" integer);'
+
+echo "
+SET ECHO OFF
+SET HEADING OFF
+SET UNDERLINE OFF
+SET COLSEP ';'
+SET LINES 32000 PAGES 5
+SET FEEDBACK off
+select LOC_N, FS_ID, FARESET_N, FARECELL_N, VALUE, ATTR, DESCRIPTION, FARECELL_ID, ENABLED_F, INCLUDED_F, T_NDX, T_ENABLED_F, M_NDX, M_ENABLED_F, SND1, SND2, LED1, LED2, FLAGS
+from FARECELL where LOC_N in $LOCATIONIDS;
+exit
+" | sqlplus guest/guest@GFI | sed -e '
+    1,10d
+    /^$/d
+    /SQL/d
+    s/\t//g
+    /^Disconnected/,$d
+    /^With/,$d
+' | sqlite3  -separator ';' $DBFILE '.import /dev/stdin FARECELL'
+
+date
+
+##################################################################
+# Load MEDIA
+##################################################################
+
+echo
+echo
+echo "Loading MEDIA"
+date
+sqlite3 $DBFILE 'drop table if exists MEDIA;'
+sqlite3 $DBFILE 'CREATE TABLE "MEDIA" ("LOC_N" integer, "FS_ID" integer, "M_NDX" integer, "GRP" integer, "DES" integer, "DESCRIPTION" text, "TEXT" text, "PEAK_F" char, "OFFPEAK_F" char, "WKD_F" char, "SAT_F" char, "SUN_F" char, "HOL_F" char, "ENABLED_F" char, "FRIENDLY_F" char);'
+
+echo "
+SET ECHO OFF
+SET HEADING OFF
+SET UNDERLINE OFF
+SET COLSEP ';'
+SET LINES 32000 PAGES 5
+SET FEEDBACK off
+select LOC_N, FS_ID, M_NDX, GRP, DES, DESCRIPTION, TEXT, PEAK_F, OFFPEAK_F, WKD_F, SAT_F, SUN_F, HOL_F, ENABLED_F, FRIENDLY_F
+from MEDIA where LOC_N in $LOCATIONIDS;
+exit
+" | sqlplus guest/guest@GFI | sed -e '
+    1,10d
+    /^$/d
+    /SQL/d
+    s/\t//g
+    /^Disconnected/,$d
+    /^With/,$d
+' | sqlite3  -separator ';' $DBFILE '.import /dev/stdin MEDIA'
+date
+
+echo
+echo "Vacuuming db"
+sqlite3  $DBFILE 'vacuum;'
+echo "Done."

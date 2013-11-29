@@ -1,0 +1,91 @@
+#!/bin/bash
+#
+# bash script to merge multiple GFI databases
+# Author: Andrew Ross
+# Date:   2013 November 29
+
+DBFILE=GFI_3.db
+BACKUPDB=GFI_VICTORIA_2010.db
+
+echo
+echo "Starting..."
+
+
+##################################################################
+# Create structure
+
+echo
+echo "Creating structure / copying db"
+date
+
+rm $DBFILE
+cp $BACKUPDB $DBFILE
+
+
+##################################################################
+# Attached DBs
+
+echo
+echo "Appending DBs"
+date
+
+while read db; do
+    echo "Appending $db"
+    date
+
+    echo "
+        attach database '$db' as X;
+        insert into TR select * from X.TR;
+        insert into PPD select * from X.PPD;
+        insert into TRMISC select * from X.TRMISC;
+        detach X;
+    " | sqlite3 $DBFILE
+done <<EOT
+  GFI_VICTORIA_2011.db
+  GFI_VICTORIA_2012.db
+  GFI_VICTORIA_2013_Nov28.db
+EOT
+
+
+##################################################################
+# Clean up
+
+echo
+echo "Vacuuming db"
+sqlite3  $DBFILE 'vacuum;'
+echo "Done."
+date
+
+exit
+
+##################################################################
+# Create Structure
+
+echo
+echo "Creating structure"
+date
+
+sqlite3 $DBFILE 'drop table if exists TR;'
+sqlite3 $DBFILE 'drop index if exists I_TR;'
+sqlite3 $DBFILE 'CREATE TABLE "TR" ("LOC_N" integer, "ID" integer, "SEQTR" integer, "TS" varchar(25), "TS_MONTH" integer, "TS_DAY" integer, "TYPE" integer, "BUS" integer, "ROUTE" integer, "N" integer);'
+sqlite3 $DBFILE 'CREATE INDEX "I_TR" ON "TR" ("LOC_N" ASC, "ID" ASC, "SEQTR" ASC, "TS_MONTH" ASC, "TS_DAY" ASC, "TYPE" ASC);'
+
+sqlite3 $DBFILE 'drop table if exists TRMISC;'
+sqlite3 $DBFILE 'drop index if exists I_TRMISC;'
+sqlite3 $DBFILE 'CREATE TABLE "TRMISC" ("LOC_N" integer, "ID" integer, "SEQTR" integer, "AMT" float);'
+sqlite3 $DBFILE 'CREATE INDEX "I_TRMISC" ON "TRMISC" ("LOC_N" ASC, "ID" ASC, "SEQTR" ASC);'
+
+sqlite3 $DBFILE 'drop table if exists PPD;'
+sqlite3 $DBFILE 'drop index if exists I_PPD;'
+sqlite3 $DBFILE 'CREATE TABLE "PPD" ("LOC_N" integer, "ID" integer, "TR_SEQ" integer, "SEQ" integer, "FS" integer, "TTP" integer, "GRP" integer, "DES" integer, "SC" integer, "AID" integer, "MID" integer, "TPBC" integer, "FLAGS" integer);'
+sqlite3 $DBFILE 'CREATE INDEX "I_PPD" ON "PPD" ("LOC_N" ASC, "ID" ASC, "TR_SEQ" ASC, "SEQ" ASC, "DES" ASC);'
+
+sqlite3 $DBFILE 'drop table if exists ET;'
+sqlite3 $DBFILE 'CREATE TABLE "ET" ("TYPE" integer, "TEXT" text);'
+
+sqlite3 $DBFILE 'drop table if exists FARECELL;'
+sqlite3 $DBFILE 'CREATE TABLE "FARECELL" ("LOC_N" integer, "FS_ID" integer, "FARESET_N" integer, "FARECELL_N" integer, "VALUE" float, "ATTR" integer, "DESCRIPTION" text, "FARECELL_ID" text, "ENABLED_F" char, "INCLUDED_F" char, "T_NDX" integer, "T_ENABLED_F" char, "M_NDX" integer, "M_ENABLED_F" char, "SND1" integer, "SND2" integer, "LED1" integer, "LED2" integer, "FLAGS" integer);'
+
+sqlite3 $DBFILE 'drop table if exists MEDIA;'
+sqlite3 $DBFILE 'CREATE TABLE "MEDIA" ("LOC_N" integer, "FS_ID" integer, "M_NDX" integer, "GRP" integer, "DES" integer, "DESCRIPTION" text, "TEXT" text, "PEAK_F" char, "OFFPEAK_F" char, "WKD_F" char, "SAT_F" char, "SUN_F" char, "HOL_F" char, "ENABLED_F" char, "FRIENDLY_F" char);'
+
