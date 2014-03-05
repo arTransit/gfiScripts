@@ -4,18 +4,19 @@
 # Author: Andrew Ross
 # Date:   2013 November 29
 
-DBFILE=GFI_3.db
+DBFILE=GFI_VIC3.db
 BACKUPDB=GFI_VICTORIA_2010.db
 
 echo
 echo "Starting..."
 
+: <<'END'
 
 ##################################################################
 # Create structure
 
 echo
-echo "Creating structure / copying db"
+echo "Copying db"
 date
 
 rm $DBFILE
@@ -52,40 +53,77 @@ EOT
 
 echo
 echo "Vacuuming db"
+#echo " ready?"
+#read R
+
 sqlite3  $DBFILE 'vacuum;'
 echo "Done."
 date
 
-exit
 
 ##################################################################
-# Create Structure
+# Create Supplemental tables
 
 echo
-echo "Creating structure"
+echo "Creating supplemental tables"
 date
 
-sqlite3 $DBFILE 'drop table if exists TR;'
-sqlite3 $DBFILE 'drop index if exists I_TR;'
-sqlite3 $DBFILE 'CREATE TABLE "TR" ("LOC_N" integer, "ID" integer, "SEQTR" integer, "TS" varchar(25), "TS_MONTH" integer, "TS_DAY" integer, "TYPE" integer, "BUS" integer, "ROUTE" integer, "N" integer);'
-sqlite3 $DBFILE 'CREATE INDEX "I_TR" ON "TR" ("LOC_N" ASC, "ID" ASC, "SEQTR" ASC, "TS_MONTH" ASC, "TS_DAY" ASC, "TYPE" ASC);'
+echo "
+drop table if exists _MEDIA;
+BEGIN TRANSACTION;
+CREATE TABLE '_MEDIA' ('DES' INT,'DESCRIPTION' , '_DESCRIPTION' TEXT);
+INSERT INTO '_MEDIA' VALUES(0,'Other','undefined');
+INSERT INTO '_MEDIA' VALUES(1,'Employee Pass',NULL);
+INSERT INTO '_MEDIA' VALUES(2,'Propass',NULL);
+INSERT INTO '_MEDIA' VALUES(3,'Other',NULL);
+INSERT INTO '_MEDIA' VALUES(4,'Upass',NULL);
+INSERT INTO '_MEDIA' VALUES(5,'Ticket',NULL);
+INSERT INTO '_MEDIA' VALUES(6,'Monthly Pass',NULL);
+INSERT INTO '_MEDIA' VALUES(7,'Discount Monthly Pass','Discount Monthly Pass');
+INSERT INTO '_MEDIA' VALUES(8,'Other',NULL);
+INSERT INTO '_MEDIA' VALUES(9,'Monthly Pass','Monthly Pass Z2');
+INSERT INTO '_MEDIA' VALUES(10,'Monthly Pass','Monthly Pass Multi');
+INSERT INTO '_MEDIA' VALUES(15,'Other','SCRAP-IT');
+INSERT INTO '_MEDIA' VALUES(20,'Upass',NULL);
+INSERT INTO '_MEDIA' VALUES(22,'Other',NULL);
+INSERT INTO '_MEDIA' VALUES(23,'Other',NULL);
+INSERT INTO '_MEDIA' VALUES(24,'Other',NULL);
+INSERT INTO '_MEDIA' VALUES(26,'Youth Pass',NULL);
+INSERT INTO '_MEDIA' VALUES(28,'Other',NULL);
+INSERT INTO '_MEDIA' VALUES(29,'BC Bus Pass - Under 65',NULL);
+INSERT INTO '_MEDIA' VALUES(30,'BC Bus Pass - Over 65',NULL);
+INSERT INTO '_MEDIA' VALUES(31,'Other',NULL);
+INSERT INTO '_MEDIA' VALUES(32,'Other',NULL);
+INSERT INTO '_MEDIA' VALUES(45,'Other',NULL);
+INSERT INTO '_MEDIA' VALUES(16,'Other',NULL);
+INSERT INTO '_MEDIA' VALUES(13,'Discount Monthly Pass',NULL);
+CREATE INDEX 'I__MEDIA' ON '_MEDIA' ('DES' ASC);
+COMMIT;
+" | sqlite3 $DBFILE
 
-sqlite3 $DBFILE 'drop table if exists TRMISC;'
-sqlite3 $DBFILE 'drop index if exists I_TRMISC;'
-sqlite3 $DBFILE 'CREATE TABLE "TRMISC" ("LOC_N" integer, "ID" integer, "SEQTR" integer, "AMT" float);'
-sqlite3 $DBFILE 'CREATE INDEX "I_TRMISC" ON "TRMISC" ("LOC_N" ASC, "ID" ASC, "SEQTR" ASC);'
+echo "
+drop table if exists BUTTONS;
+BEGIN TRANSACTION;
+CREATE TABLE 'BUTTONS' ('ID' INTEGER PRIMARY KEY  NOT NULL , 'DESCRIPTION' TEXT);
+INSERT INTO 'BUTTONS' VALUES(1,'Underpayment');
+INSERT INTO 'BUTTONS' VALUES(2,'Security');
+INSERT INTO 'BUTTONS' VALUES(3,'Transfer');
+INSERT INTO 'BUTTONS' VALUES(4,'Free Fare');
+INSERT INTO 'BUTTONS' VALUES(5,'Ramp');
+INSERT INTO 'BUTTONS' VALUES(6,'Bike Rack');
+INSERT INTO 'BUTTONS' VALUES(7,'Discount Cash');
+INSERT INTO 'BUTTONS' VALUES(8,'Promotion');
+INSERT INTO 'BUTTONS' VALUES(9,'Flash Pass');
+COMMIT;
+" | sqlite3 $DBFILE
 
-sqlite3 $DBFILE 'drop table if exists PPD;'
-sqlite3 $DBFILE 'drop index if exists I_PPD;'
-sqlite3 $DBFILE 'CREATE TABLE "PPD" ("LOC_N" integer, "ID" integer, "TR_SEQ" integer, "SEQ" integer, "FS" integer, "TTP" integer, "GRP" integer, "DES" integer, "SC" integer, "AID" integer, "MID" integer, "TPBC" integer, "FLAGS" integer);'
-sqlite3 $DBFILE 'CREATE INDEX "I_PPD" ON "PPD" ("LOC_N" ASC, "ID" ASC, "TR_SEQ" ASC, "SEQ" ASC, "DES" ASC);'
+END
 
-sqlite3 $DBFILE 'drop table if exists ET;'
-sqlite3 $DBFILE 'CREATE TABLE "ET" ("TYPE" integer, "TEXT" text);'
 
-sqlite3 $DBFILE 'drop table if exists FARECELL;'
-sqlite3 $DBFILE 'CREATE TABLE "FARECELL" ("LOC_N" integer, "FS_ID" integer, "FARESET_N" integer, "FARECELL_N" integer, "VALUE" float, "ATTR" integer, "DESCRIPTION" text, "FARECELL_ID" text, "ENABLED_F" char, "INCLUDED_F" char, "T_NDX" integer, "T_ENABLED_F" char, "M_NDX" integer, "M_ENABLED_F" char, "SND1" integer, "SND2" integer, "LED1" integer, "LED2" integer, "FLAGS" integer);'
-
-sqlite3 $DBFILE 'drop table if exists MEDIA;'
-sqlite3 $DBFILE 'CREATE TABLE "MEDIA" ("LOC_N" integer, "FS_ID" integer, "M_NDX" integer, "GRP" integer, "DES" integer, "DESCRIPTION" text, "TEXT" text, "PEAK_F" char, "OFFPEAK_F" char, "WKD_F" char, "SAT_F" char, "SUN_F" char, "HOL_F" char, "ENABLED_F" char, "FRIENDLY_F" char);'
-
+echo "
+CREATE VIEW if not exists 'V_SWIPECLASSESDAY' AS SELECT TR.TS_DAY, PPD.DES,_MEDIA.DESCRIPTION,count(PPD.rowid) as TOTALSWIPES
+from PPD join TR on TR.LOC_N=PPD.LOC_N and TR.ID=PPD.ID and TR.SEQTR=PPD.TR_SEQ
+join _MEDIA on PPD.DES=_MEDIA.DES
+group by TR.TS_DAY, PPD.DES
+order by TR.TS_DAY;
+" | sqlite3 $DBFILE
