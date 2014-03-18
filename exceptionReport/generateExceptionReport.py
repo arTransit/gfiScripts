@@ -199,20 +199,6 @@ class gfiSpreadsheet:
 
             col += 1
 
-        """
-        # output summary totals
-        row += 1 + _numDataRows
-        col = 0
-        for field,name,format,headerFormat,formula in self.fieldOutline:
-            if formula:
-                _formula = formula(col=col,row=row,startRow=_dataRowStart)
-                self.worksheet.write_formula(row,col,
-                        formula(col=col,row=row,startRow=_dataRowStart),
-                        self.formats[headerFormat])
-            else:
-                self.worksheet.write(row,col,'',self.formats[headerFormat])
-            col +=1
-        """
 
     def close(self):
         self.workbook.close()
@@ -257,12 +243,9 @@ if __name__ == '__main__':
             [calendar.month_name[args.month]+" "+str(args.year),'subHeader'],
             [_locationString,'subHeader'] ] 
 
-    cellFormats = gfiConfig.cellFormats
-    fieldOutline = gfiConfig.exceptionReportFieldOutline 
-
-    xlsx = gfiSpreadsheet(filename=args.file,formats=cellFormats,
-            header=reportHeader,columnWidth=12)
-    xlsx.fieldOutline = fieldOutline
+    xlsx = gfiSpreadsheet(filename=args.file,header=reportHeader,columnWidth=12)
+    xlsx.formats = gfiConfig.cellFormats
+    xlsx.fieldOutline = gfiConfig.exceptionReportFieldOutline 
     xlsx.data = gfiQuery.data
     xlsx.generateXLSX()
     xlsx.close()
