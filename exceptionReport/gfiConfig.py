@@ -34,3 +34,43 @@ systemList = {
     }
 
 
+cellFormats = {
+        'header':{'bold':True,'font_size':14,'align':'left','align':'vcenter'},
+        'subHeader':{'bold':True,'font_size':11,'align':'left','valign':'vcenter'},
+        'colTitle':{'bold':True,'font_size':9,'align':'center',
+            'valign':'vcenter','top':True,'bottom':True, 'bg_color':'#EEEEEE','text_wrap':True,
+            'num_format':'#,###,##0'},
+        'dataDecimal':{'font_size':9,'align':'right','valign':'vcenter',
+            'num_format':'#,###,##0.00'},
+        'dataDecimalTitle':{'bold':True,'font_size':9,'align':'right','valign':'vcenter',
+            'num_format':'#,###,##0.00','top':True,'bottom':True, 'bg_color':'#EEEEEE'},
+        'dataPercent':{'font_size':9,'align':'center','valign':'vcenter',
+            'num_format':'0.00%'},
+        'dataPercentTitle':{'bold':True,'font_size':9,'align':'center','valign':'vcenter',
+            'num_format':'0.00%','top':True,'bottom':True, 'bg_color':'#EEEEEE'},
+        'data':{'font_size':9,'align':'center','valign':'vcenter','num_format':0},
+        'datared':{'bg_color':'FF0000','font_size':9,'align':'center','valign':'vcenter','num_format':0}
+        }
+
+# structure of fields/columns:
+#   1 field name from SQL query
+#   2 col title used in worksheet
+#   3 format for data
+#   4 format for bottom summary
+#   5 function to generate summary function (sum, calculation, etc)
+#   6 field used for highlight test
+#   7 value to search for in highlight test field
+#   8 format to use if highlight test TRUE
+
+exceptionReportFieldOutline = [
+        ['bus','Bus','data','colTitle',None,None,None,None],
+        ['probetime','Probe Time','data','colTitle',None,None,None,None],
+        ['eventtime','Event time','data','colTitle',None,None,None,None],
+        ['route','Route','data','colTitle',None,'issue','route','datared'],
+        [None,'Route Correction','data','colTitle',None,None,None,None],
+        ['drv','Driver','data','colTitle',None,'issue','driver','datared'],
+        [None,'Driver Correction','data','colTitle',None,None,None,None],
+        ['curr_r','Revenue','data','colTitle',None,None,None,None],
+        ['rdr_c','Ridership','data','colTitle',None,None,None,None]
+        ]
+

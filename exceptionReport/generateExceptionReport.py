@@ -257,45 +257,11 @@ if __name__ == '__main__':
             [calendar.month_name[args.month]+" "+str(args.year),'subHeader'],
             [_locationString,'subHeader'] ] 
 
-    cellFormats = {
-        'header':{'bold':True,'font_size':14,'align':'left','align':'vcenter'},
-        'subHeader':{'bold':True,'font_size':11,'align':'left','valign':'vcenter'},
-        'colTitle':{'bold':True,'font_size':9,'align':'center',
-            'valign':'vcenter','top':True,'bottom':True, 'bg_color':'#EEEEEE','text_wrap':True,
-            'num_format':'#,###,##0'},
-        'dataDecimal':{'font_size':9,'align':'right','valign':'vcenter',
-            'num_format':'#,###,##0.00'},
-        'dataDecimalTitle':{'bold':True,'font_size':9,'align':'right','valign':'vcenter',
-            'num_format':'#,###,##0.00','top':True,'bottom':True, 'bg_color':'#EEEEEE'},
-        'dataPercent':{'font_size':9,'align':'center','valign':'vcenter',
-            'num_format':'0.00%'},
-        'dataPercentTitle':{'bold':True,'font_size':9,'align':'center','valign':'vcenter',
-            'num_format':'0.00%','top':True,'bottom':True, 'bg_color':'#EEEEEE'},
-        'data':{'font_size':9,'align':'center','valign':'vcenter','num_format':0},
-        'datared':{'bg_color':'FF4D4D','font_size':9,'align':'center','valign':'vcenter','num_format':0}
-        }
-
-    # structure of fields/columns:
-    #   1 field name from SQL query
-    #   2 col title used in worksheet
-    #   3 format for data
-    #   4 format for bottom summary
-    #   5 function to generate summary function (sum, calculation, etc)
-
-    fieldOutline = [
-        ['bus','Bus','data','colTitle',None,None,None,None],
-        ['probetime','Probe Time','data','colTitle',None,None,None,None],
-        ['eventtime','Event time','data','colTitle',None,None,None,None],
-        ['route','Route','data','colTitle',None,'issue','route','datared'],
-        [None,'Route Correction','data','colTitle',None,None,None,None],
-        ['drv','Driver','data','colTitle',None,'issue','driver','datared'],
-        [None,'Driver Correction','data','colTitle',None,None,None,None],
-        ['curr_r','Revenue','data','colTitle',None,None,None,None],
-        ['rdr_c','Ridership','data','colTitle',None,None,None,None]
-        ]
+    cellFormats = gfiConfig.cellFormats
+    fieldOutline = gfiConfig.exceptionReportFieldOutline 
 
     xlsx = gfiSpreadsheet(filename=args.file,formats=cellFormats,
-            header=reportHeader,columnWidth=8.5)
+            header=reportHeader,columnWidth=12)
     xlsx.fieldOutline = fieldOutline
     xlsx.data = gfiQuery.data
     xlsx.generateXLSX()
@@ -308,36 +274,6 @@ if __name__ == '__main__':
 
 """
 Outstanding issues:
-
-select bus,probetime,eventtime,route,drv,curr_r,rdr_c,wm_concat(issue) as issue 
-from (
-    select 
-        ml.bus, 
-        TO_CHAR(ml.ts,'YYYY-MM-DD HH24:MI') probetime, 
-        TO_CHAR(ev.ts,'YYYY-MM-DD HH24:MI') eventtime, 
-        ev.route,ev.drv,ev.curr_r,ev.rdr_c,'route' issue 
-    from ml left join ev on ml.loc_n=ev.loc_n and ml.id=ev.id 
-    where  
-        ml.loc_n in ( 7 ) and 
-        ev.ts between to_date('2014-2-01 00:00:00', 'YYYY-MM-DD HH24:MI:SS') and last_day(to_date('2014-2-01 23:59:59', 'YYYY-MM-DD HH24:MI:SS')) and 
-        ev.route not in (select route from rtelst where loc_n in (7) ) and 
-        ((ev.curr_r >0) or (ev.rdr_c >0))
-    union
-    select 
-        ml.bus, 
-        TO_CHAR(ml.ts,'YYYY-MM-DD HH24:MI') probetime,
-        TO_CHAR(ev.ts,'YYYY-MM-DD HH24:MI') eventtime,
-        ev.route,ev.drv,ev.curr_r,ev.rdr_c,'driver' issue 
-    from ml left join ev on ml.loc_n=ev.loc_n and ml.id=ev.id
-    where 
-        ml.loc_n in ( 7 ) and 
-        ev.ts between to_date('2014-2-01 00:00:00', 'YYYY-MM-DD HH24:MI:SS') and last_day(to_date('2014-2-01 23:59:59', 'YYYY-MM-DD HH24:MI:SS')) and 
-        ev.drv not in (select drv from drvlst where loc_n in (7) ) and
-        ((ev.curr_r >0) or (ev.rdr_c >0)) 
-)
-group by bus,probetime,eventtime,route,drv,curr_r,rdr_c
-order by bus,eventtime
-
 
 
 """
