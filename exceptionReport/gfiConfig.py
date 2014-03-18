@@ -49,7 +49,7 @@ cellFormats = {
         'dataPercentTitle':{'bold':True,'font_size':9,'align':'center','valign':'vcenter',
             'num_format':'0.00%','top':True,'bottom':True, 'bg_color':'#EEEEEE'},
         'data':{'font_size':9,'align':'center','valign':'vcenter','num_format':0},
-        'datared':{'bg_color':'FF0000','font_size':9,'align':'center','valign':'vcenter','num_format':0}
+        'datared':{'bg_color':'FF4D4D','font_size':9,'align':'center','valign':'vcenter','num_format':0}
         }
 
 # structure of fields/columns:

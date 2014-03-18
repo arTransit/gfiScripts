@@ -193,34 +193,25 @@ class gfiSpreadsheet:
 
         # otuput data - row by row
         row += 1
+        rowHeadField = self.fieldOutline[0][0]
+        rowHeadValue = None
         for r in range(0,_numDataRows):
             col = 0
+            if self.data[rowHeadField][r] != rowHeadValue:
+                row += 1
+                rowHeadValue = self.data[rowHeadField][r]
+
             for field,name,format,headerFormat,formula,highlightField,highlightValue,highlightFormat in self.fieldOutline:
                 if field: 
                     if highlightField:
                         if highlightValue in self.data[highlightField][r]:
-                            self.worksheet.write(row +r,col,self.data[field][r],self.formats[highlightFormat])
+                            self.worksheet.write(row,col,self.data[field][r],self.formats[highlightFormat])
                         else:
-                            self.worksheet.write(row +r,col,self.data[field][r],self.formats[format])
+                            self.worksheet.write(row,col,self.data[field][r],self.formats[format])
                     else:
-                        self.worksheet.write(row +r,col,self.data[field][r],self.formats[format])
+                        self.worksheet.write(row,col,self.data[field][r],self.formats[format])
                 col += 1
-
-        """
-        for field,name,format,headerFormat,formula,highlightField,highlightValue,highlightFormat in self.fieldOutline:
-            self.worksheet.set_column(col,col,self.columnWidth) 
-            self.worksheet.write(row,col,name,self.formats['colTitle'])
-            if field: 
-                for r in range(0,_numDataRows):
-                    if highlightField:
-                        if highlightValue in self.data[highlightField][r]:
-                            self.worksheet.write(row +r +1,col,self.data[field][r],self.formats[highlightFormat])
-                        else:
-                            self.worksheet.write(row +r +1,col,self.data[field][r],self.formats[format])
-                    else:
-                        self.worksheet.write(row +r +1,col,self.data[field][r],self.formats[format])
-        """
-
+            row += 1
 
 
     def close(self):
