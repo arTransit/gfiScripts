@@ -180,10 +180,33 @@ class gfiSpreadsheet:
             self.worksheet.write(row,col,name,self.formats[ format ])
             row +=1
         
-        # output column titles & data
         row +=1
         _dataRowStart = row +1
         _numDataRows = len(self.data[self.data.keys()[0]])
+
+        # output column titles
+        col = 0
+        for field,name,format,headerFormat,formula,highlightField,highlightValue,highlightFormat in self.fieldOutline:
+            self.worksheet.set_column(col,col,self.columnWidth) 
+            self.worksheet.write(row,col,name,self.formats['colTitle'])
+            col += 1
+
+        # otuput data - row by row
+        row += 1
+        for r in range(0,_numDataRows):
+            col = 0
+            for field,name,format,headerFormat,formula,highlightField,highlightValue,highlightFormat in self.fieldOutline:
+                if field: 
+                    if highlightField:
+                        if highlightValue in self.data[highlightField][r]:
+                            self.worksheet.write(row +r,col,self.data[field][r],self.formats[highlightFormat])
+                        else:
+                            self.worksheet.write(row +r,col,self.data[field][r],self.formats[format])
+                    else:
+                        self.worksheet.write(row +r,col,self.data[field][r],self.formats[format])
+                col += 1
+
+        """
         for field,name,format,headerFormat,formula,highlightField,highlightValue,highlightFormat in self.fieldOutline:
             self.worksheet.set_column(col,col,self.columnWidth) 
             self.worksheet.write(row,col,name,self.formats['colTitle'])
@@ -196,8 +219,8 @@ class gfiSpreadsheet:
                             self.worksheet.write(row +r +1,col,self.data[field][r],self.formats[format])
                     else:
                         self.worksheet.write(row +r +1,col,self.data[field][r],self.formats[format])
+        """
 
-            col += 1
 
 
     def close(self):
@@ -243,8 +266,10 @@ if __name__ == '__main__':
             [calendar.month_name[args.month]+" "+str(args.year),'subHeader'],
             [_locationString,'subHeader'] ] 
 
-    xlsx = gfiSpreadsheet(filename=args.file,header=reportHeader,columnWidth=12)
-    xlsx.formats = gfiConfig.cellFormats
+    xlsx = gfiSpreadsheet(filename=args.file,
+            header=reportHeader,
+            formats=gfiConfig.cellFormats,
+            columnWidth=12)
     xlsx.fieldOutline = gfiConfig.exceptionReportFieldOutline 
     xlsx.data = gfiQuery.data
     xlsx.generateXLSX()
