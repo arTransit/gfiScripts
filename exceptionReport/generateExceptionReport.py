@@ -249,7 +249,7 @@ if __name__ == '__main__':
         sys.exit(1)
 
     _locationString = ''
-    for l in args.location: _locationString += " / " + transitData.systemList[l]
+    for l in args.location: _locationString += " / " + gfiConfig.systemList[l]
     _locationString = _locationString[3:]
 
     reportHeader = [
@@ -284,12 +284,14 @@ if __name__ == '__main__':
 
     fieldOutline = [
         ['bus','Bus','data','colTitle',None,None,None,None],
-        ['trdate','Date','data','colTitle',None,None,None,None],
-        ['trtime','Time','data','colTitle',None,None,None,None],
+        ['probetime','Probe Time','data','colTitle',None,None,None,None],
+        ['eventtime','Event time','data','colTitle',None,None,None,None],
         ['route','Route','data','colTitle',None,'issue','route','datared'],
         [None,'Route Correction','data','colTitle',None,None,None,None],
         ['drv','Driver','data','colTitle',None,'issue','driver','datared'],
-        [None,'Driver Correction','data','colTitle',None,None,None,None]
+        [None,'Driver Correction','data','colTitle',None,None,None,None],
+        ['curr_r','Revenue','data','colTitle',None,None,None,None],
+        ['rdr_c','Ridership','data','colTitle',None,None,None,None]
         ]
 
     xlsx = gfiSpreadsheet(filename=args.file,formats=cellFormats,
