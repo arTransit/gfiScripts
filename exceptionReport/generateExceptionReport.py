@@ -142,42 +142,49 @@ class GFIquery:
                     _location,str(year),str(month),str(year),str(month),_location )
     
 
+
 class gfiSpreadsheet:
     filename = None
     workbook = None
     worksheet = None
-    formats = {}
+    formats = None
+    workbookFormats = {}
     data = None
     header = None
     fieldOutline = None
     columnWidth = None
+    zebraFormatting = False
+    zebraField = False
 
-    def __init__(self,*args,**kwargs):
+    def __init__(self,**kwargs):
         if kwargs.get('filename'): self.filename = kwargs.get('filename')
         if kwargs.get('data'): self.data = kwargs.get('data')
         if kwargs.get('header'): self.header = kwargs.get('header')
         if kwargs.get('fieldOutline'): self.fieldOutline = kwargs.get('fieldOutline')
         if kwargs.get('columnWidth'): self.columnWidth = kwargs.get('columnWidth')
+        if kwargs.get('formats'): self.formats = kwargs.get('formats')
+        if kwargs.get('zebraFormatting'): self.zebraFormatting = kwargs.get('zebraFormatting')
+        if kwargs.get('zebraField'): self.zebraField = kwargs.get('zebraField')
 
         self.workbook = xlsxwriter.Workbook(self.filename)
         self.worksheet = self.workbook.add_worksheet()
-        self.addFormats( kwargs.get('formats') )
 
 
     def setCell(self,cell,data,style):
         pass
 
-    def addFormats( self,_formats ):
-        for f in _formats.keys():
-            self.formats[ f ] = self.workbook.add_format( _formats[f] )
+    def addFormats( self,formats ):
+        [self.workbookFormats.update( {k:self.workbook.add_format( formats[k])}) for k in formats.keys()]
 
     def generateXLSX(self):
         row,col = 0,0
+        if self.formats: self.addFormats(self.formats)
+        else: return
 
         # output report title
         for name,format in self.header:
             print "adding: %s" % name 
-            self.worksheet.write(row,col,name,self.formats[ format ])
+            self.worksheet.write(row,col,name,self.workbookFormats[ format ])
             row +=1
         
         row +=1
@@ -186,9 +193,9 @@ class gfiSpreadsheet:
 
         # output column titles
         col = 0
-        for field,name,format,headerFormat,formula,highlightField,highlightValue,highlightFormat in self.fieldOutline:
+        for field,name,format,headerFormat,formula,highlightField,highlightValue,highlightFormat,zebraFormat in self.fieldOutline:
             self.worksheet.set_column(col,col,self.columnWidth) 
-            self.worksheet.write(row,col,name,self.formats['colTitle'])
+            self.worksheet.write(row,col,name,self.workbookFormats['colTitle'])
             col += 1
 
         # otuput data - row by row
@@ -201,17 +208,33 @@ class gfiSpreadsheet:
                 row += 1
                 rowHeadValue = self.data[rowHeadField][r]
 
-            for field,name,format,headerFormat,formula,highlightField,highlightValue,highlightFormat in self.fieldOutline:
+            for field,name,format,headerFormat,formula,highlightField,highlightValue,highlightFormat,zebraFormat in self.fieldOutline:
                 if field: 
                     if highlightField:
                         if highlightValue in self.data[highlightField][r]:
-                            self.worksheet.write(row,col,self.data[field][r],self.formats[highlightFormat])
+                            self.worksheet.write(row,col,self.data[field][r],self.workbookFormats[highlightFormat])
                         else:
-                            self.worksheet.write(row,col,self.data[field][r],self.formats[format])
+                            self.worksheet.write(row,col,self.data[field][r],self.workbookFormats[format])
                     else:
-                        self.worksheet.write(row,col,self.data[field][r],self.formats[format])
+                        self.worksheet.write(row,col,self.data[field][r],self.workbookFormats[format])
                 col += 1
             row += 1
+
+
+            """
+            self.worksheet.write(row,col,name,self.workbookFormats['colTitle'])
+            if field: 
+                for r in range(0,_numDataRows):
+                    if highlightField:
+                        if highlightValue in self.data[highlightField][r]:
+                            self.worksheet.write(row +r +1,col,self.data[field][r],self.workbookFormats[highlightFormat])
+                        else:
+                            self.worksheet.write(row +r +1,col,self.data[field][r],self.workbookFormats[format])
+                    else:
+                        self.worksheet.write(row +r +1,col,self.data[field][r],self.workbookFormats[format])
+
+            col += 1
+            """
 
 
     def close(self):
@@ -259,8 +282,9 @@ if __name__ == '__main__':
 
     xlsx = gfiSpreadsheet(filename=args.file,
             header=reportHeader,
-            formats=gfiConfig.cellFormats,
-            columnWidth=12)
+            columnWidth=12,
+            zebraFormatting=True)
+    xlsx.formats = gfiConfig.cellFormats
     xlsx.fieldOutline = gfiConfig.exceptionReportFieldOutline 
     xlsx.data = gfiQuery.data
     xlsx.generateXLSX()

@@ -1,7 +1,5 @@
 """
-transitData
-
-Variables and functions directly related to BC transit.
+Variables and config setting for managing GFI data and spreadhseets"
 """
 
 
@@ -35,7 +33,7 @@ systemList = {
 
 
 cellFormats = {
-        'header':{'bold':True,'font_size':14,'align':'left','align':'vcenter'},
+        'header':{'bold':True,'font_size':14,'align':'left','valign':'vcenter'},
         'subHeader':{'bold':True,'font_size':11,'align':'left','valign':'vcenter'},
         'colTitle':{'bold':True,'font_size':9,'align':'center',
             'valign':'vcenter','top':True,'bottom':True, 'bg_color':'#EEEEEE','text_wrap':True,
@@ -49,7 +47,8 @@ cellFormats = {
         'dataPercentTitle':{'bold':True,'font_size':9,'align':'center','valign':'vcenter',
             'num_format':'0.00%','top':True,'bottom':True, 'bg_color':'#EEEEEE'},
         'data':{'font_size':9,'align':'center','valign':'vcenter','num_format':0},
-        'datared':{'bg_color':'FF4D4D','font_size':9,'align':'center','valign':'vcenter','num_format':0}
+        'datagrey':{'bg_color':'E0E0E0','font_size':9,'align':'center','valign':'vcenter','num_format':0},
+        'datared':{'bg_color':'FF0000','font_size':9,'align':'center','valign':'vcenter','num_format':0}
         }
 
 # structure of fields/columns:
@@ -61,16 +60,20 @@ cellFormats = {
 #   6 field used for highlight test
 #   7 value to search for in highlight test field
 #   8 format to use if highlight test TRUE
+#   9 format to use for zebra formatting
 
 exceptionReportFieldOutline = [
-        ['bus','Bus','data','colTitle',None,None,None,None],
-        ['probetime','Probe Time','data','colTitle',None,None,None,None],
-        ['eventtime','Event time','data','colTitle',None,None,None,None],
-        ['route','Route','data','colTitle',None,'issue','route','datared'],
-        [None,'Route Correction','data','colTitle',None,None,None,None],
-        ['drv','Driver','data','colTitle',None,'issue','driver','datared'],
-        [None,'Driver Correction','data','colTitle',None,None,None,None],
-        ['curr_r','Revenue','data','colTitle',None,None,None,None],
-        ['rdr_c','Ridership','data','colTitle',None,None,None,None]
+        ['bus','Bus','data','colTitle',None,None,None,None,'datagrey'],
+        ['probetime','Probe Time','data','colTitle',None,None,None,None,'datagrey'],
+        ['eventtime','Event time','data','colTitle',None,None,None,None,'datagrey'],
+        ['route','Route','data','colTitle',None,'issue','route','datared',None],
+        [None,'Route Correction','data','colTitle',None,None,None,None,'datagrey'],
+        ['drv','Driver','data','colTitle',None,'issue','driver','datared',None],
+        [None,'Driver Correction','data','colTitle',None,None,None,None,'datagrey'],
+        ['curr_r','Revenue','data','colTitle',None,None,None,None,'datagrey'],
+        ['rdr_c','Ridership','data','colTitle',None,None,None,None,'datagrey']
         ]
+
+
+
 
