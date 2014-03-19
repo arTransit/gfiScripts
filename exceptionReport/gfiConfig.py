@@ -66,9 +66,9 @@ exceptionReportFieldOutline = [
         ['bus','Bus','data','colTitle',None,None,None,None,'datagrey'],
         ['probetime','Probe Time','data','colTitle',None,None,None,None,'datagrey'],
         ['eventtime','Event time','data','colTitle',None,None,None,None,'datagrey'],
-        ['route','Route','data','colTitle',None,'issue','route','datared',None],
+        ['route','Route','data','colTitle',None,'issue','route','datared','datared'],
         [None,'Route Correction','data','colTitle',None,None,None,None,'datagrey'],
-        ['drv','Driver','data','colTitle',None,'issue','driver','datared',None],
+        ['drv','Driver','data','colTitle',None,'issue','driver','datared','datared'],
         [None,'Driver Correction','data','colTitle',None,None,None,None,'datagrey'],
         ['curr_r','Revenue','data','colTitle',None,None,None,None,'datagrey'],
         ['rdr_c','Ridership','data','colTitle',None,None,None,None,'datagrey']

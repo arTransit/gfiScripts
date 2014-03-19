@@ -202,11 +202,13 @@ class gfiSpreadsheet:
         row += 1
         rowHeadField = self.fieldOutline[0][0]
         rowHeadValue = None
+        zebraOn = True  # flag for zebra formatting
+
         for r in range(0,_numDataRows):
             col = 0
-            if self.data[rowHeadField][r] != rowHeadValue:
-                row += 1
+            if self.zebraFormatting and (self.data[rowHeadField][r] != rowHeadValue):
                 rowHeadValue = self.data[rowHeadField][r]
+                zebraOn = not zebraOn
 
             for field,name,format,headerFormat,formula,highlightField,highlightValue,highlightFormat,zebraFormat in self.fieldOutline:
                 if field: 
@@ -214,9 +216,21 @@ class gfiSpreadsheet:
                         if highlightValue in self.data[highlightField][r]:
                             self.worksheet.write(row,col,self.data[field][r],self.workbookFormats[highlightFormat])
                         else:
-                            self.worksheet.write(row,col,self.data[field][r],self.workbookFormats[format])
+                            if self.zebraFormatting and zebraOn:
+                                self.worksheet.write(row,col,self.data[field][r],self.workbookFormats[zebraFormat])
+                            else:
+                                self.worksheet.write(row,col,self.data[field][r],self.workbookFormats[format])
                     else:
-                        self.worksheet.write(row,col,self.data[field][r],self.workbookFormats[format])
+                        if self.zebraFormatting and zebraOn:
+                            self.worksheet.write(row,col,self.data[field][r],self.workbookFormats[zebraFormat])
+                        else:
+                            self.worksheet.write(row,col,self.data[field][r],self.workbookFormats[format])
+                else:
+                    if self.zebraFormatting and zebraOn:
+                        self.worksheet.write(row,col,'',self.workbookFormats[zebraFormat])
+                    else:
+                        self.worksheet.write(row,col,'',self.workbookFormats[format])
+
                 col += 1
             row += 1
 
