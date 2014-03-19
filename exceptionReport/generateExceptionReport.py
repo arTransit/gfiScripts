@@ -1,9 +1,9 @@
 """
-generateMSR.py
+generateExceptionReport.py
 
 Generate GFI Monthly Exception report
 Command line usage: 
-    generateExceptionReport.py -l locid(s) -y year -m month -c oracleCred -f xlsxName
+    generateExceptionReport.py -l locid(s) -y year -m month -c user/pass@db -f xlsxName
 
 This software uses two external libraries:
     cx_Oracle: http://cx-oracle.sourceforge.net/html/
