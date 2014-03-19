@@ -200,55 +200,37 @@ class gfiSpreadsheet:
 
         # otuput data - row by row
         row += 1
-        rowHeadField = self.fieldOutline[0][0]
-        rowHeadValue = None
+        #rowHeadField = self.fieldOutline[0][0]
+        zebraFieldValue = None
         zebraOn = True  # flag for zebra formatting
 
         for r in range(0,_numDataRows):
             col = 0
-            if self.zebraFormatting and (self.data[rowHeadField][r] != rowHeadValue):
-                rowHeadValue = self.data[rowHeadField][r]
+
+            # alternate zebra formatting based on zebra field
+            if self.zebraFormatting and (self.data[self.zebraField][r] != zebraFieldValue):
+                zebraFieldValue = self.data[self.zebraField][r]
                 zebraOn = not zebraOn
 
             for field,name,format,headerFormat,formula,highlightField,highlightValue,highlightFormat,zebraFormat in self.fieldOutline:
+                # test if data from query or empty field
                 if field: 
-                    if highlightField:
-                        if highlightValue in self.data[highlightField][r]:
-                            self.worksheet.write(row,col,self.data[field][r],self.workbookFormats[highlightFormat])
-                        else:
-                            if self.zebraFormatting and zebraOn:
-                                self.worksheet.write(row,col,self.data[field][r],self.workbookFormats[zebraFormat])
-                            else:
-                                self.worksheet.write(row,col,self.data[field][r],self.workbookFormats[format])
-                    else:
-                        if self.zebraFormatting and zebraOn:
-                            self.worksheet.write(row,col,self.data[field][r],self.workbookFormats[zebraFormat])
-                        else:
-                            self.worksheet.write(row,col,self.data[field][r],self.workbookFormats[format])
-                else:
-                    if self.zebraFormatting and zebraOn:
-                        self.worksheet.write(row,col,'',self.workbookFormats[zebraFormat])
-                    else:
-                        self.worksheet.write(row,col,'',self.workbookFormats[format])
+                    _data = self.data[field][r]
+                else: 
+                    _data = ''
 
+                # test type of formatting required for cell
+                if highlightField and (highlightValue in self.data[highlightField][r]):
+                    _formatting = self.workbookFormats[highlightFormat]
+                elif self.zebraFormatting and zebraOn:
+                    _formatting = self.workbookFormats[zebraFormat]
+                else:
+                    _formatting = self.workbookFormats[format]
+
+                self.worksheet.write(row,col,_data,_formatting)
                 col += 1
             row += 1
 
-
-            """
-            self.worksheet.write(row,col,name,self.workbookFormats['colTitle'])
-            if field: 
-                for r in range(0,_numDataRows):
-                    if highlightField:
-                        if highlightValue in self.data[highlightField][r]:
-                            self.worksheet.write(row +r +1,col,self.data[field][r],self.workbookFormats[highlightFormat])
-                        else:
-                            self.worksheet.write(row +r +1,col,self.data[field][r],self.workbookFormats[format])
-                    else:
-                        self.worksheet.write(row +r +1,col,self.data[field][r],self.workbookFormats[format])
-
-            col += 1
-            """
 
 
     def close(self):
@@ -297,7 +279,8 @@ if __name__ == '__main__':
     xlsx = gfiSpreadsheet(filename=args.file,
             header=reportHeader,
             columnWidth=12,
-            zebraFormatting=True)
+            zebraFormatting=True,
+            zebraField='bus')
     xlsx.formats = gfiConfig.cellFormats
     xlsx.fieldOutline = gfiConfig.exceptionReportFieldOutline 
     xlsx.data = gfiQuery.data
