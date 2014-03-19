@@ -142,42 +142,72 @@ class GFIquery:
                     _location,str(year),str(month),str(year),str(month),_location )
     
 
+
+class cellFormat:
+    """Data structure for cell/xlsx format parameters"""
+
+    name = None
+    properties = {}
+
+    def __init__(self,**kwargs)
+        self.properties.update(kwargs)
+
+    def __str__(self):
+        return ", ".join(["{%s: %s}" % (k,str(self._params[k])) for k in sorted(self._params.keys())])
+
+    def set(self,param,value):
+        self.properties['param']=value
+
+    def get(self, param):
+        return self.properties['param']
+
+    def remove(self,param):
+        del self.properties['param']
+
+
+
 class gfiSpreadsheet:
     filename = None
     workbook = None
     worksheet = None
-    formats = {}
+    formats = None
+    workbookFormats = {}
     data = None
     header = None
     fieldOutline = None
     columnWidth = None
+    zebraFormatting = False
+    zebraField = False
 
-    def __init__(self,*args,**kwargs):
+    def __init__(self,**kwargs):
         if kwargs.get('filename'): self.filename = kwargs.get('filename')
         if kwargs.get('data'): self.data = kwargs.get('data')
         if kwargs.get('header'): self.header = kwargs.get('header')
         if kwargs.get('fieldOutline'): self.fieldOutline = kwargs.get('fieldOutline')
         if kwargs.get('columnWidth'): self.columnWidth = kwargs.get('columnWidth')
+        if kwargs.get('formats'): self.formats = kwargs.get('formats')
+        if kwargs.get('zebraFormatting'): self.zebraFormatting = kwargs.get('zebraFormatting')
+        if kwargs.get('zebraField'): self.zebraField = kwargs.get('zebraField')
 
         self.workbook = xlsxwriter.Workbook(self.filename)
         self.worksheet = self.workbook.add_worksheet()
-        self.addFormats( kwargs.get('formats') )
 
 
     def setCell(self,cell,data,style):
         pass
 
-    def addFormats( self,_formats ):
-        for f in _formats.keys():
-            self.formats[ f ] = self.workbook.add_format( _formats[f] )
+    def addFormats( self,formats ):
+        [self.workbookFormats.update( {k:self.workbook.add_format( formats[k])}) for k in formats.keys()]
 
     def generateXLSX(self):
         row,col = 0,0
+        if formats: self.addFormats(self.formats)
+        else: return
 
         # output report title
         for name,format in self.header:
             print "adding: %s" % name 
-            self.worksheet.write(row,col,name,self.formats[ format ])
+            self.worksheet.write(row,col,name,self.workbookFormats[ format ])
             row +=1
         
         # output column titles & data
@@ -186,16 +216,16 @@ class gfiSpreadsheet:
         _numDataRows = len(self.data[self.data.keys()[0]])
         for field,name,format,headerFormat,formula,highlightField,highlightValue,highlightFormat in self.fieldOutline:
             self.worksheet.set_column(col,col,self.columnWidth) 
-            self.worksheet.write(row,col,name,self.formats['colTitle'])
+            self.worksheet.write(row,col,name,self.workbookFormats['colTitle'])
             if field: 
                 for r in range(0,_numDataRows):
                     if highlightField:
                         if highlightValue in self.data[highlightField][r]:
-                            self.worksheet.write(row +r +1,col,self.data[field][r],self.formats[highlightFormat])
+                            self.worksheet.write(row +r +1,col,self.data[field][r],self.workbookFormats[highlightFormat])
                         else:
-                            self.worksheet.write(row +r +1,col,self.data[field][r],self.formats[format])
+                            self.worksheet.write(row +r +1,col,self.data[field][r],self.workbookFormats[format])
                     else:
-                        self.worksheet.write(row +r +1,col,self.data[field][r],self.formats[format])
+                        self.worksheet.write(row +r +1,col,self.data[field][r],self.workbookFormats[format])
 
             col += 1
 
@@ -243,7 +273,7 @@ if __name__ == '__main__':
             [calendar.month_name[args.month]+" "+str(args.year),'subHeader'],
             [_locationString,'subHeader'] ] 
 
-    xlsx = gfiSpreadsheet(filename=args.file,header=reportHeader,columnWidth=12)
+    xlsx = gfiSpreadsheet(filename=args.file,header=reportHeader,columnWidth=12,zebraFormatting=True)
     xlsx.formats = gfiConfig.cellFormats
     xlsx.fieldOutline = gfiConfig.exceptionReportFieldOutline 
     xlsx.data = gfiQuery.data
