@@ -2,6 +2,8 @@
 Variables and config setting for managing GFI data and spreadhseets"
 """
 
+import calendar
+
 
 systemList = {
         1:"Victoria",
@@ -51,6 +53,72 @@ cellFormats = {
         'datared':{'bg_color':'FF0000','font_size':9,'align':'center','valign':'vcenter','num_format':0}
         }
 
+
+def locationString( locationIds ):
+    """
+    Return string of location names specified by locationIds
+    """
+
+    _locationString = ''
+    for l in locationIds: _locationString += " / " + systemList[l]
+    return _locationString[3:]
+
+
+"""
+###########################################################
+
+Exception Reports SQL, Header, Field outline
+
+###########################################################
+"""
+
+
+def exceptionReportSQL(location,year,month):
+    """
+    Return SQL for exception reports using location, year, and month attributes.
+    """
+    
+    try:
+        _location = ','.join([str(s) for s in location])
+    except TypeError:
+        _location = str(location)
+
+
+    return (
+        "select bus,probetime,eventtime,route,drv,curr_r,rdr_c,wm_concat(issue) as issue "
+        "from ( "
+            "select  "
+                "ml.bus,  "
+                "TO_CHAR(ml.ts,'YYYY-MM-DD HH24:MI') probetime,  "
+                "TO_CHAR(ev.ts,'YYYY-MM-DD HH24:MI') eventtime,  "
+                "ev.route,ev.drv,ev.curr_r,ev.rdr_c,'route' issue  "
+            "from ml left join ev on ml.loc_n=ev.loc_n and ml.id=ev.id  "
+            "where   "
+                "ml.loc_n in ( %s ) and  "
+                "ev.ts between to_date('%s-%s-01 00:00:00', 'YYYY-MM-DD HH24:MI:SS') and last_day(to_date('%s-%s-01 23:59:59', 'YYYY-MM-DD HH24:MI:SS')) and  "
+                "ev.route not in (select route from rtelst where loc_n in (%s) ) and  "
+                "((ev.curr_r >0) or (ev.rdr_c >0)) "
+            "union "
+            "select  "
+                "ml.bus,  "
+                "TO_CHAR(ml.ts,'YYYY-MM-DD HH24:MI') probetime, "
+                "TO_CHAR(ev.ts,'YYYY-MM-DD HH24:MI') eventtime, "
+                "ev.route,ev.drv,ev.curr_r,ev.rdr_c,'driver' issue  "
+            "from ml left join ev on ml.loc_n=ev.loc_n and ml.id=ev.id "
+            "where  "
+                "ml.loc_n in ( %s ) and  "
+                "ev.ts between to_date('%s-%s-01 00:00:00', 'YYYY-MM-DD HH24:MI:SS') and last_day(to_date('%s-%s-01 23:59:59', 'YYYY-MM-DD HH24:MI:SS')) and  "
+                "ev.drv not in (select drv from drvlst where loc_n in (%s) ) and "
+                "((ev.curr_r >0) or (ev.rdr_c >0))  "
+        ") "
+        "group by bus,probetime,eventtime,route,drv,curr_r,rdr_c "
+        "order by bus,eventtime "
+        ) % (
+                _location,str(year),str(month),str(year),str(month),_location,
+                _location,str(year),str(month),str(year),str(month),_location )
+
+
+
 # structure of fields/columns:
 #   1 field name from SQL query
 #   2 col title used in worksheet
@@ -74,6 +142,13 @@ exceptionReportFieldOutline = [
         ['rdr_c','Ridership','data','colTitle',None,None,None,None,'datagrey']
         ]
 
+
+
+def exceptionReportHeader(month,year,location):
+    return [
+            ['Monthly Exception Report','header'],
+            [calendar.month_name[month]+" "+str(year),'subHeader'],
+            [locationString( location ),'subHeader'] ] 
 
 
 
