@@ -41,7 +41,8 @@ if __name__ == '__main__':
         print "Not completed."
         sys.exit(1)
 
-    gq = gfiQuery.GFIquery(args.connection, gfiConfig.exceptionReportSQL(args.location,args.year,args.month) )
+    gq = gfiQuery.GFIquery(args.connection, 
+            gfiConfig.exceptionReportSQL(args.location,args.year,args.month) )
     gq.execute()
     if not gq.status:
         print "DB error"
