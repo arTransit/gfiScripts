@@ -10,6 +10,7 @@ This software uses an xlsx external library:
 
 
 import xlsxwriter
+import types
 
 
 
@@ -100,11 +101,6 @@ class gfiSpreadsheet:
                 zebraOn = not zebraOn
 
             for field,name,format,headerFormat,formula,highlightField,highlightValue,highlightFormat,zebraFormat in self.fieldOutline:
-                # test if data from query or empty field
-                if field: 
-                    _data = self.data[field][r]
-                else: 
-                    _data = ''
 
                 # test type of formatting required for cell
                 if highlightField and (highlightValue in self.data[highlightField][r]):
@@ -114,7 +110,16 @@ class gfiSpreadsheet:
                 else:
                     _formatting = self.workbookFormats[format]
 
-                self.worksheet.write(row,col,_data,_formatting)
+                # test if data from query or empty field
+                if type(field) == types.FunctionType:
+                    self.worksheet.write_formula(row,col, field(row=row, col=col),_formatting)
+                else:
+                    if field:
+                        _data = self.data[field][r]
+                    else: 
+                        _data = ''
+                    self.worksheet.write(row,col,_data,_formatting)
+
                 col += 1
             row += 1
 

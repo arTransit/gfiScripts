@@ -38,6 +38,8 @@ class GFIquery:
         self.credentials = credentials
         self.sql = sql
 
+        # print "cred: %s, sql: %s" % (self.credentials,self.sql)
+
 
     def execute(self):
         try:
