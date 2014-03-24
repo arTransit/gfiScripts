@@ -49,7 +49,7 @@ if __name__ == '__main__':
         sys.exit(1)
 
     xlsx = gfiXLSX.gfiSpreadsheet(filename=args.file,
-            header=gfiConfig.exceptionReportHeader(args.month,args.year,args.location),
+            header=gfiConfig.exceptionReportHeader(args.location,args.year,args.month),
             columnWidth=12,
             zebraFormatting=True,
             zebraField='bus')

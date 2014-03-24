@@ -48,8 +48,9 @@ if __name__ == '__main__':
 
 
     xlsx = gfiXLSX.gfiSpreadsheet(filename=args.file,
-            header=gfiConfig.mrsrReportHeader(args.month,args.year,args.location),
+            header=gfiConfig.mrsrReportHeader(args.location,args.year,args.month),
             columnWidth=8.5,
+            summaryRow=True,
             zebraFormatting=False)
     xlsx.formats = gfiConfig.cellFormats
     xlsx.fieldOutline = gfiConfig.mrsrFieldOutline

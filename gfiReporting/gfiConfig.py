@@ -169,7 +169,7 @@ exceptionReportFieldOutline = [
 
 
 
-def exceptionReportHeader(month,year,location):
+def exceptionReportHeader(location,year,month):
     return [
             ['Monthly Exception Report','header'],
             [calendar.month_name[month]+" "+str(year),'subHeader'],
@@ -358,11 +358,85 @@ mrsrFieldOutline = [
 
 
 
-def mrsrReportHeader(month,year,location):
+def mrsrReportHeader(location,year,month):
 
-    print "mrsrReportHeader: loc:%s, y:%s, m:%s" % (str(location),str(year),str(month))
     return [
         ['Monthly Route Summary Report','header'],
+        [calendar.month_name[month]+" "+str(year),'subHeader'],
+        [locationString(location),'subHeader'] ] 
+
+
+
+"""
+###########################################################
+
+Monthly Summary Reports SQL, Header, Field outline
+
+###########################################################
+"""
+
+# structure of fields/columns:
+#   1 field name from SQL query
+#   2 col title used in worksheet
+#   3 format for data
+#   4 format for bottom summary
+#   5 function to generate summary function (sum, calculation, etc)
+#   6 field used for highlight test
+#   7 value to search for in highlight test field
+#   8 format to use if highlight test TRUE
+#   9 format to use for zebra formatting
+
+msrFieldOutline = [
+    ['servicedate','Date','data','colTitle',None,None,None,None,None],
+    ['bus_c','Bus Probed','data','colTitle',generateSumFunction,None,None,None,None],
+    ['curr_r','Current Revenue','data','colTitle',generateSumFunction,None,None,None,None],
+    ['rdr_c','Ridership','data','colTitle',generateSumFunction,None,None,None,None],
+    ['token_c','Token Count','data','colTitle',generateSumFunction,None,None,None,None],
+    ['ticket_c','Ticket Count','data','colTitle',generateSumFunction,None,None,None,None],
+    ['pass_c','Pass Count','data','colTitle',generateSumFunction,None,None,None,None],
+    ['bill_c','Bill Count','data','colTitle',generateSumFunction,None,None,None,None],
+    ['coin_c','Coin Count','data','colTitle',generateSumFunction,None,None,None,None],
+    ['uncl_r','Unclassified Revenue','data','colTitle',generateSumFunction,None,None,None,None],
+    ['cbxalm','Cahsbox Alarm','data','colTitle',generateSumFunction,None,None,None,None],
+    ['bypass','Bypass Alarm','data','colTitle',generateSumFunction,None,None,None,None]
+    ]
+
+def msreportSQL(location,year,month):
+    """
+    Return SQL query using given location, year, and month attributes.
+    """
+    
+    try:
+        _location = ','.join([str(s) for s in location])
+    except TypeError:
+        _location = str(location)
+
+    return (
+        "SELECT to_char(ml.tday, 'YYYY-MM-DD') serviceDate,"
+        " count(ml.bus) bus_c,sum(ml.curr_r) curr_r,"
+        " sum(ml.rdr_c) rdr_c, sum(ml.token_c) token_c,"
+        " sum(ml.ticket_c) ticket_c,sum(ml.pass_c) pass_c,"
+        " sum(ml.bill_c) bill_c,"
+        " (sum(ml.nickel)+sum(ml.dime)+sum(ml.quarter)+sum(ml.half)+sum(ml.one)+sum(ml.two)) coin_c,"
+        " sum(ml.uncl_r) uncl_r,sum(ml.cbxalm) cbxalm,"
+        " sum(ml.bypass) bypass"
+        " "
+        "FROM ml"
+        " "
+        "WHERE ml.tday BETWEEN to_date('%s-%s-01 00:00:00', 'YYYY-MM-DD HH24:MI:SS')"
+        " AND last_day(to_date('%s-%s-01 00:00:00', 'YYYY-MM-DD HH24:MI:SS'))"
+        " AND ml.loc_n in ( %s )"
+        " "
+        "GROUP BY to_char(ml.tday, 'YYYY-MM-DD')"
+        " "
+        "ORDER BY to_char(ml.tday, 'YYYY-MM-DD')"
+        ) % (str(year),str(month),str(year),str(month),_location)
+
+
+
+def msrReportHeader(location,year,month):
+    return [
+        ['Monthly Summary Report','header'],
         [calendar.month_name[month]+" "+str(year),'subHeader'],
         [locationString(location),'subHeader'] ] 
 

@@ -42,7 +42,8 @@ class gfiSpreadsheet:
     data = None
     header = None
     fieldOutline = None
-    columnWidth = None
+    columnWidth = 8.5
+    summaryRow=False
     zebraFormatting = False
     zebraField = False
 
@@ -53,6 +54,7 @@ class gfiSpreadsheet:
         if kwargs.get('fieldOutline'): self.fieldOutline = kwargs.get('fieldOutline')
         if kwargs.get('columnWidth'): self.columnWidth = kwargs.get('columnWidth')
         if kwargs.get('formats'): self.formats = kwargs.get('formats')
+        if kwargs.get('summaryRow'): self.summaryRow= kwargs.get('summaryRow')
         if kwargs.get('zebraFormatting'): self.zebraFormatting = kwargs.get('zebraFormatting')
         if kwargs.get('zebraField'): self.zebraField = kwargs.get('zebraField')
 
@@ -84,7 +86,7 @@ class gfiSpreadsheet:
         col = 0
         for field,name,format,headerFormat,formula,highlightField,highlightValue,highlightFormat,zebraFormat in self.fieldOutline:
             self.worksheet.set_column(col,col,self.columnWidth) 
-            self.worksheet.write(row,col,name,self.workbookFormats['colTitle'])
+            self.worksheet.write(row,col,name,self.workbookFormats[headerFormat])
             col += 1
 
         # otuput data - row by row
@@ -122,6 +124,17 @@ class gfiSpreadsheet:
 
                 col += 1
             row += 1
+
+        # output summary row
+        if self.summaryRow:
+            col = 0
+            for field,name,format,headerFormat,formula,highlightField,highlightValue,highlightFormat,zebraFormat in self.fieldOutline:
+                if formula:
+                    self.worksheet.write_formula(row,col,formula(row=row,col=col,startRow=row-_numDataRows),
+                            self.workbookFormats[headerFormat])
+                else:
+                    self.worksheet.write(row,col,'',self.workbookFormats[headerFormat])
+                col += 1
 
 
     def close(self):
