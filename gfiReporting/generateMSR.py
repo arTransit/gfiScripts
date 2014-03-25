@@ -34,7 +34,7 @@ def getArgs():
         print "ERROR: year out of range (2000 - %d)" % datetime.date.today().year
         args.error = True
     if (args.month > 12) or (args.month < 1):
-        print "ERROR: month out of range (1 - 12)" % datetime.date.today().year
+        print "ERROR: month out of range (1 - 12)"
         args.error = True
     return args
 
