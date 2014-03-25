@@ -10,6 +10,7 @@ import errno
 import argparse
 import datetime
 import generateMSR
+import generateMRSR
 #import gfiConfig
 #import gfiQuery
 #import gfiXLSX
@@ -88,9 +89,7 @@ if __name__ == '__main__':
     #
 
 
-    #
     # Monthly Summary Reports (MSR)
-    #
 
     print "Generating Monthly Summary Reports"
     print "  Year:%s\n  Month:%s" % (str(args.year),str(args.month))
@@ -101,10 +100,20 @@ if __name__ == '__main__':
         _filename = '%s/%s/MonthlySummary_%s_%s.xlsx' % (
                 REPORT_BASE_DIRECTORY,s['name'],str(args.year),''.join(['000',str(args.month)])[-2:])
         generateMSR.createReport(s['ids'],args.year,args.month,_filename,args.connection)
-    print '\n'
+    print '\n\n'
 
 
     # Monthly Route Summary Reports (MRSR)
+    print "Generating Monthly Route Summary Reports"
+    print "  Year:%s\n  Month:%s" % (str(args.year),str(args.month))
+
+    for s in systemList:
+        sys.stdout.write('. ')
+        sys.stdout.flush()
+        _filename = '%s/%s/MonthlyRouteSummary_%s_%s.xlsx' % (
+                REPORT_BASE_DIRECTORY,s['name'],str(args.year),''.join(['000',str(args.month)])[-2:])
+        generateMRSR.createReport(s['ids'],args.year,args.month,_filename,args.connection)
+    print '\n\n'
 
 
     print "Completed."

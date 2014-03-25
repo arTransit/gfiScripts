@@ -33,22 +33,17 @@ def getArgs():
     return args
 
 
-if __name__ == '__main__':
-    args = getArgs()
-    if args.error:
-        print "Not completed."
-        sys.exit(1)
 
-    gq = gfiQuery.GFIquery(args.connection, 
-            gfiConfig.mrsreportSQL(args.location,args.year,args.month) )
+def createReport(location,year,month,filename,connection):
+    gq = gfiQuery.GFIquery(connection, 
+            gfiConfig.mrsreportSQL(location,year,month) )
     gq.execute()
     if not gq.status:
         print "DB error"
         sys.exit(1)
 
-
-    xlsx = gfiXLSX.gfiSpreadsheet(filename=args.file,
-            header=gfiConfig.mrsrReportHeader(args.location,args.year,args.month),
+    xlsx = gfiXLSX.gfiSpreadsheet(filename=filename,
+            header=gfiConfig.mrsrReportHeader(location,year,month),
             columnWidth=8.5,
             summaryRow=True,
             zebraFormatting=False)
@@ -57,6 +52,16 @@ if __name__ == '__main__':
     xlsx.data = gq.data
     xlsx.generateXLSX()
     xlsx.close()
+
+
+
+if __name__ == '__main__':
+    args = getArgs()
+    if args.error:
+        print "Not completed."
+        sys.exit(1)
+
+    createReport(args.location,args.year,args.month,args.file,args.connection)
 
     print "Completed."
     sys.exit(0)
