@@ -44,7 +44,7 @@ def createReport(location,year,month,filename,connection):
 
     xlsx = gfiXLSX.gfiSpreadsheet(filename=filename,
             header=gfiConfig.mrsrReportHeader(location,year,month),
-            columnWidth=8.5,
+            columnWidth=gfiConfig.mrsReportColumnWidth,
             summaryRow=True,
             zebraFormatting=False)
     xlsx.formats = gfiConfig.cellFormats

@@ -98,6 +98,10 @@ Exception Reports SQL, Header, Field outline
 """
 
 
+
+exceptionReportColumnWidth=12
+
+
 def exceptionReportSQL(location,year,month):
     """
     Return SQL for exception reports using location, year, and month attributes.
@@ -184,6 +188,9 @@ Monthly Route Summary Reports SQL, Header, Field outline
 
 ###########################################################
 """
+
+
+mrsReportColumnWidth=8.5
 
 
 def mrsreportSQL(location,year,month):
@@ -374,6 +381,10 @@ Monthly Summary Reports SQL, Header, Field outline
 
 ###########################################################
 """
+
+msReportColumnWidth=8.5
+
+
 
 # structure of fields/columns:
 #   1 field name from SQL query
