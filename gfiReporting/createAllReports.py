@@ -1,20 +1,22 @@
-"""
-createAllReports.py
+""" createAllReports.py
 Generate all reports for all systems, emailing and transferring to network drives as required
 
 """
 
 
 import sys
+import os
+import errno
 import argparse
 import datetime
-import gfiConfig
-import gfiQuery
-import gfiXLSX
+import generateMSR
+#import gfiConfig
+#import gfiQuery
+#import gfiXLSX
 
 
 systemList = [
-        {'ids':[1,2],'name':"Victoria & Landford"},
+        {'ids':[1,2],'name':"Victoria_Langford"},
         {'ids':[3],'name':"Whistler"},
         {'ids':[4],'name':"Squamish"},
         {'ids':[5],'name':"Nanaimo"},
@@ -37,8 +39,11 @@ systemList = [
         {'ids':[22],'name':"Terrace"},
         {'ids':[23],'name':"Prince Rupert"},
         {'ids':[24],'name':"Kitimat"},
-        {'ids':[25],'name':"Fort St. John"}
+        {'ids':[25],'name':"Fort StJohn"}
     ]
+
+REPORT_BASE_DIRECTORY='C:/Temp/GFIreporting'
+#REPORTBASEDIRECTORY='G:/Public/GFI/GFIreporting'
 
 
 def getArgs():
@@ -58,34 +63,49 @@ def getArgs():
     return args
 
 
+
+def makePath(path):
+    try:
+        os.makedirs(path)
+    except OSError as exception:
+        if exception.errno != errno.EEXIST:
+            raise
+
+
+
 if __name__ == '__main__':
     args = getArgs()
     if args.error:
         print "Arguement error"
         sys.exit(1)
 
+    # make directories
+    for s in systemList:
+        makePath(REPORT_BASE_DIRECTORY + '/' + s['name'])
 
-    print args
-    sys.exit()
+    #
+    # Exception Reports
+    #
 
 
-    gq = gfiQuery.GFIquery(args.connection, 
-            gfiConfig.exceptionReportSQL(args.location,args.year,args.month) )
-    gq.execute()
-    if not gq.status:
-        print "DB error"
-        sys.exit(1)
+    #
+    # Monthly Summary Reports (MSR)
+    #
 
-    xlsx = gfiXLSX.gfiSpreadsheet(filename=args.file,
-            header=gfiConfig.exceptionReportHeader(args.location,args.year,args.month),
-            columnWidth=12,
-            zebraFormatting=True,
-            zebraField='bus')
-    xlsx.formats = gfiConfig.cellFormats
-    xlsx.fieldOutline = gfiConfig.exceptionReportFieldOutline 
-    xlsx.data = gq.data
-    xlsx.generateXLSX()
-    xlsx.close()
+    print "Generating Monthly Summary Reports"
+    print "  Year:%s\n  Month:%s" % (str(args.year),str(args.month))
+
+    for s in systemList:
+        sys.stdout.write('. ')
+        sys.stdout.flush()
+        _filename = '%s/%s/MonthlySummary_%s_%s.xlsx' % (
+                REPORT_BASE_DIRECTORY,s['name'],str(args.year),''.join(['000',str(args.month)])[-2:])
+        generateMSR.createReport(s['ids'],args.year,args.month,_filename,args.connection)
+    print '\n'
+
+
+    # Monthly Route Summary Reports (MRSR)
+
 
     print "Completed."
     sys.exit(0)
