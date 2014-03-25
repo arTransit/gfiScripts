@@ -124,6 +124,7 @@ def exceptionReportSQL(location,year,month):
             "from ml left join ev on ml.loc_n=ev.loc_n and ml.id=ev.id  "
             "where   "
                 "ml.loc_n in ( %s ) and  "
+
                 "ev.ts between to_date('%s-%s-01 00:00:00', 'YYYY-MM-DD HH24:MI:SS') and last_day(to_date('%s-%s-01 23:59:59', 'YYYY-MM-DD HH24:MI:SS')) and  "
                 "ev.route not in (select route from rtelst where loc_n in (%s) ) and  "
                 "((ev.curr_r >0) or (ev.rdr_c >0)) "
@@ -435,7 +436,7 @@ def msreportSQL(location,year,month):
         "FROM ml"
         " "
         "WHERE ml.tday BETWEEN to_date('%s-%s-01 00:00:00', 'YYYY-MM-DD HH24:MI:SS')"
-        " AND last_day(to_date('%s-%s-01 00:00:00', 'YYYY-MM-DD HH24:MI:SS'))"
+        " AND last_day(to_date('%s-%s-01 23:59:59', 'YYYY-MM-DD HH24:MI:SS'))"
         " AND ml.loc_n in ( %s )"
         " "
         "GROUP BY to_char(ml.tday, 'YYYY-MM-DD')"
