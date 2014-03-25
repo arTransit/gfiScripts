@@ -19,40 +19,40 @@ import email, email.encoders,email.mime.text,email.mime.base
 
 SMTPSERVER = '10.170.3.119'
 FROM_EMAIL = 'gfiReporting@bctransit.com'
-
-
 REPORT_BASE_DIRECTORY='G:/BusinessIntelligence/Temp'
 #REPORT_BASE_DIRECTORY='C:/Temp/GFIreporting'
 #REPORTBASEDIRECTORY='G:/Public/GFI/GFIreporting'
 
 
 reportingSystemList = [
-        {'ids':[1,2],'name':'Victoria_Langford','email':['andrew_ross@bctransit.com','andrew_miller@bctransit.com']},
-        {'ids':[3],'name':'Whistler','email':['andrew_ross@bctransit.com','andrew_miller@bctransit.com']},
-        {'ids':[4],'name':'Squamish','email':['andrew_ross@bctransit.com','andrew_miller@bctransit.com']},
-        {'ids':[5],'name':'Nanaimo','email':['andrew_ross@bctransit.com','andrew_miller@bctransit.com']},
-        {'ids':[6],'name':'Abbotsford','email':['andrew_ross@bctransit.com','andrew_miller@bctransit.com']},
-        {'ids':[7],'name':'Kelowna','email':['andrew_ross@bctransit.com','andrew_miller@bctransit.com']},
-        {'ids':[8],'name':'Kamloops','email':['andrew_ross@bctransit.com','andrew_miller@bctransit.com']},
-        {'ids':[9],'name':'Prince George','email':['andrew_ross@bctransit.com','andrew_miller@bctransit.com']},
-        {'ids':[10],'name':'Cowichan Valley','email':['andrew_ross@bctransit.com','andrew_miller@bctransit.com']},
-        {'ids':[11],'name':'Trail','email':['andrew_ross@bctransit.com','andrew_miller@bctransit.com']},
-        {'ids':[12],'name':'Comox','email':['andrew_ross@bctransit.com','andrew_miller@bctransit.com']},
-        {'ids':[13],'name':'Port Alberni','email':['andrew_ross@bctransit.com','andrew_miller@bctransit.com']},
-        {'ids':[14],'name':'Campbell River','email':['andrew_ross@bctransit.com','andrew_miller@bctransit.com']},
-        {'ids':[15],'name':'Powell River','email':['andrew_ross@bctransit.com','andrew_miller@bctransit.com']},
-        {'ids':[16],'name':'Sunshine Valley','email':['andrew_ross@bctransit.com','andrew_miller@bctransit.com']},
-        {'ids':[17],'name':'Vernon','email':['andrew_ross@bctransit.com','andrew_miller@bctransit.com']},
-        {'ids':[18],'name':'Penticton','email':['andrew_ross@bctransit.com','andrew_miller@bctransit.com']},
-        {'ids':[19],'name':'Chilliwack','email':['andrew_ross@bctransit.com','andrew_miller@bctransit.com']},
-        {'ids':[20],'name':'Cranbrook','email':['andrew_ross@bctransit.com','andrew_miller@bctransit.com']},
-        {'ids':[21],'name':'Nelson','email':['andrew_ross@bctransit.com','andrew_miller@bctransit.com']},
-        {'ids':[22],'name':'Terrace','email':['andrew_ross@bctransit.com','andrew_miller@bctransit.com']},
-        {'ids':[23],'name':'Prince Rupert','email':['andrew_ross@bctransit.com','andrew_miller@bctransit.com']},
-        {'ids':[24],'name':'Kitimat','email':['andrew_ross@bctransit.com','andrew_miller@bctransit.com']},
-        {'ids':[25],'name':'Fort StJohn','email':['andrew_ross@bctransit.com','andrew_miller@bctransit.com']}
+        {'ids':[1,2],'name':'Victoria','email':['andrew_ross@bctransit.com']},
+        {'ids':[3],'name':'Whistler','email':['andrew_ross@bctransit.com']},
+        {'ids':[25],'name':'Fort StJohn','email':['andrew_ross@bctransit.com']}
     ]
 
+"""
+{'ids':[4],'name':'Squamish','email':['andrew_ross@bctransit.com']},
+{'ids':[5],'name':'Nanaimo','email':['andrew_ross@bctransit.com']},
+{'ids':[6],'name':'Abbotsford','email':['andrew_ross@bctransit.com']},
+{'ids':[7],'name':'Kelowna','email':['andrew_ross@bctransit.com']},
+{'ids':[8],'name':'Kamloops','email':['andrew_ross@bctransit.com']},
+{'ids':[9],'name':'Prince George','email':['andrew_ross@bctransit.com']},
+{'ids':[10],'name':'Cowichan Valley','email':['andrew_ross@bctransit.com']},
+{'ids':[11],'name':'Trail','email':['andrew_ross@bctransit.com']},
+{'ids':[12],'name':'Comox','email':['andrew_ross@bctransit.com']},
+{'ids':[13],'name':'Port Alberni','email':['andrew_ross@bctransit.com']},
+{'ids':[14],'name':'Campbell River','email':['andrew_ross@bctransit.com']},
+{'ids':[15],'name':'Powell River','email':['andrew_ross@bctransit.com']},
+{'ids':[16],'name':'Sunshine Valley','email':['andrew_ross@bctransit.com']},
+{'ids':[17],'name':'Vernon','email':['andrew_ross@bctransit.com']},
+{'ids':[18],'name':'Penticton','email':['andrew_ross@bctransit.com']},
+{'ids':[19],'name':'Chilliwack','email':['andrew_ross@bctransit.com']},
+{'ids':[20],'name':'Cranbrook','email':['andrew_ross@bctransit.com']},
+{'ids':[21],'name':'Nelson','email':['andrew_ross@bctransit.com']},
+{'ids':[22],'name':'Terrace','email':['andrew_ross@bctransit.com']},
+{'ids':[23],'name':'Prince Rupert','email':['andrew_ross@bctransit.com']},
+{'ids':[24],'name':'Kitimat','email':['andrew_ross@bctransit.com']},
+"""
 
 def getArgs():
     argsPsr = argparse.ArgumentParser(description='Create GFI reports: Exception, MRSR, MSR')
