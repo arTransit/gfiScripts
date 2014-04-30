@@ -42,7 +42,9 @@ def createReport(location,year,month,filename,connection):
         print "DB error"
         sys.exit(1)
 
-    xlsx = gfiXLSX.gfiSpreadsheet(filename=filename,
+    xlsx = gfiXLSX.gfiSpreadsheet(
+            filename=filename,
+            sheetTitle='%s-%s' % (str(year),('00'+str(month))[-2:]),
             header=gfiConfig.mrsrReportHeader(location,year,month),
             columnWidth=gfiConfig.mrsReportColumnWidth,
             summaryRow=True,
