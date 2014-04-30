@@ -23,7 +23,7 @@ def getArgs():
     argsPsr.add_argument('-y','--year',required=True,type=int,help='eg 2014')
     argsPsr.add_argument('-m','--month',required=True,type=int,help='eg 12')
     argsPsr.add_argument('-f','--file',required=True,help='filename')
-    argsPsr.add_argument('-c','--connection',required=True,help='eg user/pass@GFI')
+    argsPsr.add_argument('-c','--credentials',required=True,help='user/pass@GFI')
     args = argsPsr.parse_args()
     args.error = False
     if (args.year > datetime.date.today().year) or (args.year < 2000):
@@ -35,15 +35,18 @@ def getArgs():
     return args
 
 
-def createReport(location,year,month,filename,connection):
-    gq = gfiQuery.GFIquery(connection, 
+def createReport(location,year,month,filename,credentials):
+
+    gq = gfiQuery.GFIquery(credentials, 
             gfiConfig.exceptionReportSQL(location,year,month) )
     gq.execute()
     if not gq.status:
         print "DB error"
         sys.exit(1)
 
-    xlsx = gfiXLSX.gfiSpreadsheet(filename=filename,
+    xlsx = gfiXLSX.gfiSpreadsheet(
+            filename=filename,
+            sheetTitle='%s-%s' % (str(year),('00'+str(month))[-2:]),
             header=gfiConfig.exceptionReportHeader(location,year,month),
             columnWidth=gfiConfig.exceptionReportColumnWidth,
             zebraFormatting=True,
@@ -62,7 +65,7 @@ if __name__ == '__main__':
         print "Not completed."
         sys.exit(1)
 
-    createReport(args.location,args.year,args.month,args.file,args.connection)
+    createReport(args.location,args.year,args.month,args.file,args.credentials)
 
     print "Completed."
     sys.exit(0)

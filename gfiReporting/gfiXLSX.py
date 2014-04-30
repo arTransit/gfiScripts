@@ -35,6 +35,7 @@ def generatePercentageFunction(*args,**kwargs):
 
 class gfiSpreadsheet:
     filename = None
+    sheetTitle='Exception Report'
     workbook = None
     worksheet = None
     formats = None
@@ -49,6 +50,7 @@ class gfiSpreadsheet:
 
     def __init__(self,**kwargs):
         if kwargs.get('filename'): self.filename = kwargs.get('filename')
+        if kwargs.get('sheetTitle'): self.sheetTitle = kwargs.get('sheetTitle')
         if kwargs.get('data'): self.data = kwargs.get('data')
         if kwargs.get('header'): self.header = kwargs.get('header')
         if kwargs.get('fieldOutline'): self.fieldOutline = kwargs.get('fieldOutline')
@@ -59,7 +61,7 @@ class gfiSpreadsheet:
         if kwargs.get('zebraField'): self.zebraField = kwargs.get('zebraField')
 
         self.workbook = xlsxwriter.Workbook(self.filename)
-        self.worksheet = self.workbook.add_worksheet()
+        self.worksheet = self.workbook.add_worksheet(self.sheetTitle)
 
 
     def setCell(self,cell,data,style):
