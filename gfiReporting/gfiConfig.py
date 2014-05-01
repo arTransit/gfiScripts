@@ -46,6 +46,8 @@ cellFormats = {
             'num_format':'#,###,##0.00'},
         'dataDecimalTitle':{'bold':True,'font_size':9,'align':'right','valign':'vcenter',
             'num_format':'#,###,##0.00','top':True,'bottom':True, 'bg_color':'#EEEEEE'},
+        'dataDecimalGrey':{'bg_color':'E0E0E0','font_size':9,'align':'right','valign':'vcenter',
+            'num_format':'#,###,##0.00'},
         'dataPercent':{'font_size':9,'align':'center','valign':'vcenter',
             'num_format':'0.00%'},
         'dataPercentTitle':{'bold':True,'font_size':9,'align':'center','valign':'vcenter',
@@ -169,7 +171,7 @@ exceptionReportFieldOutline = [
         [None,'Route Correction','data','colTitle',None,None,None,None,'datagrey'],
         ['drv','Driver','data','colTitle',None,'issue','driver','datared','datared'],
         [None,'Driver Correction','data','colTitle',None,None,None,None,'datagrey'],
-        ['curr_r','Revenue','data','colTitle',None,None,None,None,'datagrey'],
+        ['curr_r','Revenue','dataDecimal','colTitle',None,None,None,None,'dataDecimalGrey'],
         ['rdr_c','Ridership','data','colTitle',None,None,None,None,'datagrey']
         ]
 
