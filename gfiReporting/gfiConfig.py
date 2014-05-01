@@ -52,7 +52,8 @@ cellFormats = {
             'num_format':'0.00%','top':True,'bottom':True, 'bg_color':'#EEEEEE'},
         'data':{'font_size':9,'align':'center','valign':'vcenter','num_format':0},
         'datagrey':{'bg_color':'E0E0E0','font_size':9,'align':'center','valign':'vcenter','num_format':0},
-        'datared':{'bg_color':'FF0000','font_size':9,'align':'center','valign':'vcenter','num_format':0}
+        'datared':{'bg_color':'FF9E9E','font_size':9,'align':'center','valign':'vcenter','num_format':0},
+        'headerred':{'bg_color':'FF9E9E','font_size':9,'align':'left','valign':'vcenter','num_format':0}
         }
 
 
@@ -176,9 +177,11 @@ exceptionReportFieldOutline = [
 
 def exceptionReportHeader(location,year,month):
     return [
-            ['Monthly Exception Report','header'],
-            [calendar.month_name[month]+" "+str(year),'subHeader'],
-            [locationString( location ),'subHeader'] ] 
+        ['Monthly Exception Report','header'],
+        [calendar.month_name[month]+" "+str(year),'subHeader'],
+        [locationString( location ),'subHeader'],
+        ['','subHeader'],
+        [['Incorrect Route and Driver numbers are highlighted in RED','','',''],'headerred'] ] 
 
 
 
@@ -371,7 +374,9 @@ def mrsrReportHeader(location,year,month):
     return [
         ['Monthly Route Summary Report','header'],
         [calendar.month_name[month]+" "+str(year),'subHeader'],
-        [locationString(location),'subHeader'] ] 
+        [locationString( location ),'subHeader'],
+        ['','subHeader'],
+        ['Incorrect Route and Driver numbers are highlighted in RED','headerred'] ] 
 
 
 
@@ -450,7 +455,9 @@ def msrReportHeader(location,year,month):
     return [
         ['Monthly Summary Report','header'],
         [calendar.month_name[month]+" "+str(year),'subHeader'],
-        [locationString(location),'subHeader'] ] 
+        [locationString( location ),'subHeader'],
+        ['','subHeader'],
+        ['Incorrect Route and Driver numbers are highlighted in RED','headerred'] ] 
 
 
 

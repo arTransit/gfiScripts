@@ -77,7 +77,10 @@ class gfiSpreadsheet:
 
         # output report title
         for name,format in self.header:
-            self.worksheet.write(row,col,name,self.workbookFormats[ format ])
+            if isinstance(name,(tuple,list)):
+                self.worksheet.write_row(row,col,name,self.workbookFormats[ format ])
+            else:
+                self.worksheet.write(row,col,name,self.workbookFormats[ format ])
             row +=1
         
         row +=1
