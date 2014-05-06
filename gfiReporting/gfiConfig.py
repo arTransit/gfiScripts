@@ -377,8 +377,7 @@ def mrsrReportHeader(location,year,month):
         ['Monthly Route Summary Report','header'],
         [calendar.month_name[month]+" "+str(year),'subHeader'],
         [locationString( location ),'subHeader'],
-        ['','subHeader'],
-        ['Incorrect Route and Driver numbers are highlighted in RED','headerred'] ] 
+        ['','subHeader' ] ]
 
 
 
@@ -458,8 +457,7 @@ def msrReportHeader(location,year,month):
         ['Monthly Summary Report','header'],
         [calendar.month_name[month]+" "+str(year),'subHeader'],
         [locationString( location ),'subHeader'],
-        ['','subHeader'],
-        ['Incorrect Route and Driver numbers are highlighted in RED','headerred'] ] 
+        ['','subHeader'] ]
 
 
 
