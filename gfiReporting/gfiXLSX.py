@@ -111,21 +111,21 @@ class gfiSpreadsheet:
 
                 # test type of formatting required for cell
                 if highlightField and (highlightValue in self.data[highlightField][r]):
-                    _formatting = self.workbookFormats[highlightFormat]
+                    _formatting = highlightFormat
                 elif self.zebraFormatting and zebraOn:
-                    _formatting = self.workbookFormats[zebraFormat]
+                    _formatting = zebraFormat
                 else:
-                    _formatting = self.workbookFormats[format]
+                    _formatting = format
 
                 # test if data from query or empty field
                 if type(field) == types.FunctionType:
-                    self.worksheet.write_formula(row,col, field(row=row, col=col),_formatting)
+                    self.worksheet.write_formula(row,col, field(row=row, col=col),self.workbookFormats[_formatting])
                 else:
                     if field:
                         _data = self.data[field][r]
                     else: 
                         _data = ''
-                    self.worksheet.write(row,col,_data,_formatting)
+                    self.worksheet.write(row,col,_data,self.workbookFormats[_formatting])
 
                 col += 1
             row += 1
