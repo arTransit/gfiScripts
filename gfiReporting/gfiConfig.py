@@ -55,7 +55,9 @@ cellFormats = {
         'data':{'font_size':9,'align':'center','valign':'vcenter','num_format':0},
         'datagrey':{'bg_color':'E0E0E0','font_size':9,'align':'center','valign':'vcenter','num_format':0},
         'datared':{'bg_color':'FF9E9E','font_size':9,'align':'center','valign':'vcenter','num_format':0},
-        'headerred':{'bg_color':'FF9E9E','font_size':9,'align':'left','valign':'vcenter','num_format':0}
+        'headerred':{'bg_color':'FF9E9E','font_size':9,'align':'left','valign':'vcenter','num_format':0},
+        'headeryellow':{'bg_color':'FFFF80','font_size':9,'align':'left','valign':'vcenter','num_format':0},
+        'datayellow':{'bg_color':'FFFF80','font_size':9,'align':'center','valign':'vcenter','num_format':0}
         }
 
 
@@ -168,9 +170,9 @@ exceptionReportFieldOutline = [
         ['probetime','Probe Time','data','colTitle',None,None,None,None,'datagrey'],
         ['eventtime','Event time','data','colTitle',None,None,None,None,'datagrey'],
         ['route','Route','data','colTitle',None,'issue','route','datared','datagrey'],
-        [None,'Route Correction','data','colTitle',None,None,None,None,'datagrey'],
+        [None,'Route Correction','data','colTitle',None,'issue','route','datayellow','datagrey'],
         ['drv','Driver','data','colTitle',None,'issue','driver','datared','datagrey'],
-        [None,'Driver Correction','data','colTitle',None,None,None,None,'datagrey'],
+        [None,'Driver Correction','data','colTitle',None,'issue','driver','datayellow','datagrey'],
         ['curr_r','Revenue','dataDecimal','colTitle',None,None,None,None,'dataDecimalGrey'],
         ['rdr_c','Ridership','data','colTitle',None,None,None,None,'datagrey']
         ]
@@ -183,7 +185,8 @@ def exceptionReportHeader(location,year,month):
         [calendar.month_name[month]+" "+str(year),'subHeader'],
         [locationString( location ),'subHeader'],
         ['','subHeader'],
-        [['Incorrect Route and Driver numbers are highlighted in RED','','',''],'headerred'] ] 
+        [['Incorrect Route and Driver numbers are highlighted in RED','','',''],'headerred'], 
+        [['Please enter correct values in YELLOW cells','','',''],'headeryellow'] ] 
 
 
 
