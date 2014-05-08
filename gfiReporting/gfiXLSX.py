@@ -97,7 +97,7 @@ class gfiSpreadsheet:
         # otuput data - row by row
         row += 1
         zebraFieldValue = None
-        zebraOn = True  # flag for zebra formatting
+        zebraOn = False  # flag for zebra formatting
 
         for r in range(0,_numDataRows):
             col = 0
@@ -105,27 +105,29 @@ class gfiSpreadsheet:
             # alternate zebra formatting based on zebra field
             if self.zebraFormatting and (self.data[self.zebraField][r] != zebraFieldValue):
                 zebraFieldValue = self.data[self.zebraField][r]
-                zebraOn = not zebraOn
+                zebraOn = True
+            else:
+                zebraOn = False
 
             for field,name,format,headerFormat,formula,highlightField,highlightValue,highlightFormat,zebraFormat in self.fieldOutline:
 
                 # test type of formatting required for cell
                 if highlightField and (highlightValue in self.data[highlightField][r]):
-                    _formatting = highlightFormat
-                elif self.zebraFormatting and zebraOn:
-                    _formatting = zebraFormat
+                    _formatName = highlightFormat
                 else:
-                    _formatting = format
+                    _formatName = format
+
+                if zebraOn: _formatName += zebraFormat
 
                 # test if data from query or empty field
                 if type(field) == types.FunctionType:
-                    self.worksheet.write_formula(row,col, field(row=row, col=col),self.workbookFormats[_formatting])
+                    self.worksheet.write_formula(row,col, field(row=row, col=col),self.workbookFormats[_formatName])
                 else:
                     if field:
                         _data = self.data[field][r]
                     else: 
                         _data = ''
-                    self.worksheet.write(row,col,_data,self.workbookFormats[_formatting])
+                    self.worksheet.write(row,col,_data,self.workbookFormats[_formatName])
 
                 col += 1
             row += 1

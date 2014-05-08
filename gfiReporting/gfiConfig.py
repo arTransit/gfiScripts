@@ -44,6 +44,8 @@ cellFormats = {
             'num_format':'#,###,##0'},
         'dataDecimal':{'font_size':9,'align':'right','valign':'vcenter',
             'num_format':'#,###,##0.00'},
+        'dataDecimalzebra':{'font_size':9,'top':1,'align':'right','valign':'vcenter',
+            'num_format':'#,###,##0.00'},
         'dataDecimalTitle':{'bold':True,'font_size':9,'align':'right','valign':'vcenter',
             'num_format':'#,###,##0.00','top':True,'bottom':True, 'bg_color':'#EEEEEE'},
         'dataDecimalGrey':{'bg_color':'E0E0E0','font_size':9,'align':'right','valign':'vcenter',
@@ -53,11 +55,14 @@ cellFormats = {
         'dataPercentTitle':{'bold':True,'font_size':9,'align':'center','valign':'vcenter',
             'num_format':'0.00%','top':True,'bottom':True, 'bg_color':'#EEEEEE'},
         'data':{'font_size':9,'align':'center','valign':'vcenter','num_format':0},
+        'datazebra':{'font_size':9,'top':1,'align':'center','valign':'vcenter','num_format':0},
         'datagrey':{'bg_color':'E0E0E0','font_size':9,'align':'center','valign':'vcenter','num_format':0},
         'datared':{'bg_color':'FF9E9E','font_size':9,'align':'center','valign':'vcenter','num_format':0},
+        'dataredzebra':{'bg_color':'FF9E9E','top':1,'font_size':9,'align':'center','valign':'vcenter','num_format':0},
         'headerred':{'bg_color':'FF9E9E','font_size':9,'align':'left','valign':'vcenter','num_format':0},
         'headeryellow':{'bg_color':'FFFF80','font_size':9,'align':'left','valign':'vcenter','num_format':0},
-        'datayellow':{'bg_color':'FFFF80','font_size':9,'align':'center','valign':'vcenter','num_format':0}
+        'datayellow':{'bg_color':'FFFF80','font_size':9,'align':'center','valign':'vcenter','num_format':0},
+        'datayellowzebra':{'bg_color':'FFFF80','top':1,'font_size':9,'align':'center','valign':'vcenter','num_format':0}
         }
 
 
@@ -163,18 +168,18 @@ def exceptionReportSQL(location,year,month):
 #   6 field used for highlight test
 #   7 value to search for in highlight test field
 #   8 format to use if highlight test TRUE
-#   9 format to use for zebra formatting
+#   9 format to use for zebra formatting - note string appended to format name to get zebra format
 
 exceptionReportFieldOutline = [
-        ['bus','Bus','data','colTitle',None,None,None,None,'datagrey'],
-        ['probetime','Probe Time','data','colTitle',None,None,None,None,'datagrey'],
-        ['eventtime','Event time','data','colTitle',None,None,None,None,'datagrey'],
-        ['route','Route','data','colTitle',None,'issue','route','datared','datagrey'],
-        [None,'Route Correction','data','colTitle',None,'issue','route','datayellow','datagrey'],
-        ['drv','Driver','data','colTitle',None,'issue','driver','datared','datagrey'],
-        [None,'Driver Correction','data','colTitle',None,'issue','driver','datayellow','datagrey'],
-        ['curr_r','Revenue','dataDecimal','colTitle',None,None,None,None,'dataDecimalGrey'],
-        ['rdr_c','Ridership','data','colTitle',None,None,None,None,'datagrey']
+        ['bus','Bus','data','colTitle',None,None,None,None,'zebra'],
+        ['probetime','Probe Time','data','colTitle',None,None,None,None,'zebra'],
+        ['eventtime','Event time','data','colTitle',None,None,None,None,'zebra'],
+        ['route','Route','data','colTitle',None,'issue','route','datared','zebra'],
+        [None,'Route Correction','data','colTitle',None,'issue','route','datayellow','zebra'],
+        ['drv','Driver','data','colTitle',None,'issue','driver','datared','zebra'],
+        [None,'Driver Correction','data','colTitle',None,'issue','driver','datayellow','zebra'],
+        ['curr_r','Revenue','dataDecimal','colTitle',None,None,None,None,'zebra'],
+        ['rdr_c','Ridership','data','colTitle',None,None,None,None,'zebra']
         ]
 
 
