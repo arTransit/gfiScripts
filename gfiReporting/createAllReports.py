@@ -19,7 +19,7 @@ import email, email.encoders,email.mime.text,email.mime.base
 
 SMTPSERVER = '10.170.3.119'
 FROM_EMAIL = 'gfiReporting@bctransit.com'
-REPORT_BASE_DIRECTORY='G:/BusinessIntelligence/Temp'
+REPORT_BASE_DIRECTORY='G:/BusinessIntelligence/Temp/GFIreporting/'
 #REPORT_BASE_DIRECTORY='C:/Temp/GFIreporting'
 #REPORTBASEDIRECTORY='G:/Public/GFI/GFIreporting'
 
@@ -55,6 +55,10 @@ reportingSystemList = [
 def getArgs():
     argsPsr = argparse.ArgumentParser(description='Create GFI reports: Exception, MRSR, MSR')
     argsPsr.add_argument('-e','--email',action='store_true',default=False,help='flag to email reports')
+    argsPsr.add_argument('-a','--all',action='store_true',default=False,help='create all reports')
+    argsPsr.add_argument('-x','--exception',action='store_true',default=False,help='create exception reports')
+    argsPsr.add_argument('-r','--mrsr',action='store_true',default=False,help='create month route summary reports')
+    argsPsr.add_argument('-s','--msr',action='store_true',default=False,help='create month summary reports')
     argsPsr.add_argument('-y','--year',required=True,type=int,help='eg 2014')
     argsPsr.add_argument('-m','--month',required=True,type=int,help='eg 12')
     argsPsr.add_argument('-c','--connection',required=True,help='eg user/pass@GFI')
@@ -111,65 +115,75 @@ if __name__ == '__main__':
     for s in reportingSystemList:
         makePath(REPORT_BASE_DIRECTORY + '/' + s['name'])
 
-
-
     # Exception Reports
 
-    print "Generating Monthly Exception Reports"
-    print "  Year:%s\n  Month:%s" % (str(args.year),str(args.month))
+    if args.all or args.exception:
+        print "Generating Monthly Exception Reports"
+        print "  Year:%s\n  Month:%s" % (str(args.year),str(args.month))
+        if args.email:
+            print "  email is ON"
+        else:
+            print "  no email"
 
-    for s in reportingSystemList:
-        sys.stdout.write('. ')
-        sys.stdout.flush()
-        _filename = '%s/%s/MonthlyException_%s_%s.xlsx' % (
-                REPORT_BASE_DIRECTORY,s['name'],str(args.year),''.join(['000',str(args.month)])[-2:])
-        generateExceptionReport.createReport(s['ids'],args.year,args.month,_filename,args.connection)
+        for s in reportingSystemList:
+            sys.stdout.write('. ')
+            sys.stdout.flush()
+            _filename = '%s/%s/MonthlyException_%s_%s.xlsx' % (
+                    REPORT_BASE_DIRECTORY,s['name'],str(args.year),''.join(['000',str(args.month)])[-2:])
+            generateExceptionReport.createReport(s['ids'],args.year,args.month,_filename,args.connection)
 
-        emailBody = (
-                '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" '
-                '"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml">'
-                '<body style="font-size:12px;font-family:Tahoma">'
-                '<p>Please find attached the <b>%s GFI Monthly Summary Report, %s %s</b>.</p>'
-                '<p>All reports are located here: <i>G:\BusinessIntelligence\Temp</i></p>'
-                '<p>The GFI Reporting Team &lt;gfiReporting@bctransit.com&gt;</p>'
-                '</body></html>' ) % (s['name'],calendar.month_name[args.month],str(args.year))
-        emailReport(
-                s['email'],
-                FROM_EMAIL,
-                'GFI Monthly Exception Report - %s, %s %d' % (s['name'],calendar.month_name[args.month],args.year),
-                emailBody,
-                _filename)
+            if args.email:
+                emailBody = (
+                        '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" '
+                        '"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml">'
+                        '<body style="font-size:12px;font-family:Tahoma">'
+                        '<p>Please find attached the <b>%s GFI Monthly Summary Report, %s %s</b>.</p>'
+                        '<p>All reports are located here: <i>G:\BusinessIntelligence\Temp</i></p>'
+                        '<p>The GFI Reporting Team &lt;gfiReporting@bctransit.com&gt;</p>'
+                        '</body></html>' ) % (s['name'],calendar.month_name[args.month],str(args.year))
+                emailReport(
+                        s['email'],
+                        FROM_EMAIL,
+                        'GFI Monthly Exception Report - %s, %s %d' % (s['name'],calendar.month_name[args.month],args.year),
+                        emailBody,
+                        _filename)
+    else:
+        print "No Monthly Exception Reports"
     print '\n\n'
 
 
     # Monthly Summary Reports (MSR)
 
-    print "Generating Monthly Summary Reports"
-    print "  Year:%s\n  Month:%s" % (str(args.year),str(args.month))
+    if args.all or args.msr:
+        print "Generating Monthly Summary Reports"
+        print "  Year:%s\n  Month:%s" % (str(args.year),str(args.month))
 
-    for s in reportingSystemList:
-        sys.stdout.write('. ')
-        sys.stdout.flush()
-        _filename = '%s/%s/MonthlySummary_%s_%s.xlsx' % (
-                REPORT_BASE_DIRECTORY,s['name'],str(args.year),''.join(['000',str(args.month)])[-2:])
-        generateMSR.createReport(s['ids'],args.year,args.month,_filename,args.connection)
+        for s in reportingSystemList:
+            sys.stdout.write('. ')
+            sys.stdout.flush()
+            _filename = '%s/%s/MonthlySummary_%s_%s.xlsx' % (
+                    REPORT_BASE_DIRECTORY,s['name'],str(args.year),''.join(['000',str(args.month)])[-2:])
+            generateMSR.createReport(s['ids'],args.year,args.month,_filename,args.connection)
+    else:
+        print "No Monthly Summary Reports"
     print '\n\n'
 
 
 
     # Monthly Route Summary Reports (MRSR)
-    print "Generating Monthly Route Summary Reports"
-    print "  Year:%s\n  Month:%s" % (str(args.year),str(args.month))
+    if args.all or args.mrsr:
+        print "Generating Monthly Route Summary Reports"
+        print "  Year:%s\n  Month:%s" % (str(args.year),str(args.month))
 
-    for s in reportingSystemList:
-        sys.stdout.write('. ')
-        sys.stdout.flush()
-        _filename = '%s/%s/MonthlyRouteSummary_%s_%s.xlsx' % (
-                REPORT_BASE_DIRECTORY,s['name'],str(args.year),''.join(['000',str(args.month)])[-2:])
-        generateMRSR.createReport(s['ids'],args.year,args.month,_filename,args.connection)
+        for s in reportingSystemList:
+            sys.stdout.write('. ')
+            sys.stdout.flush()
+            _filename = '%s/%s/MonthlyRouteSummary_%s_%s.xlsx' % (
+                    REPORT_BASE_DIRECTORY,s['name'],str(args.year),''.join(['000',str(args.month)])[-2:])
+            generateMRSR.createReport(s['ids'],args.year,args.month,_filename,args.connection)
+    else:
+        print "No Monthly Route Summary Reports"
     print '\n\n'
-
-
 
     print "Completed."
     sys.exit(0)
