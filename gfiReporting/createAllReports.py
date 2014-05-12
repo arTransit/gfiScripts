@@ -43,11 +43,10 @@ reportingSystemList = [
         {'ids':[9],'name':'Prince George','email':['Erik Madsen <erikm@pgtransit.pwt.ca>']},
         {'ids':[23],'name':'Prince Rupert','email':['Darby Minhas <darbara.minhas@firstgroup.com>']},
         {'ids':[4],'name':'Squamish','email':['Christine Darling <christined@squamishtransit.pwt.ca>']},
-        {'ids':[16],'name':'Sunshine Valley','email':['Amanda Walkley <amanda.walkey@scrd.ca>']},
+        {'ids':[16],'name':'Sunshine Coast','email':['Amanda Walkley <amanda.walkey@scrd.ca>']},
         {'ids':[22],'name':'Terrace','email':['Marilyn Ouellet <marilyn.ouellet@firstgroup.com>']},
         {'ids':[11],'name':'Trail','email':['Sharman Thomas <sharman.trailtransit@shawlink.ca>']},
         {'ids':[17],'name':'Vernon','email':['Cindy Laidlaw <cindy.laidlaw@firstgroup.com>','Doreen Stanton <doreen.stanton@firstgroup.com>']},
-        {'ids':[1,2],'name':'Victoria_Langford','email':['gfiReporting@bctransit.com']},
         {'ids':[3],'name':'Whistler','email':['Steve Antil <steve@whistlertransit.ca>']}
     ]
 
