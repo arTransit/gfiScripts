@@ -136,8 +136,7 @@ if __name__ == '__main__':
                         '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" '
                         '"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml">'
                         '<body style="font-size:12px;font-family:Tahoma">'
-                        '<p>Please find attached the <b>%s GFI Monthly Summary Report, %s %s</b>.</p>'
-                        '<p>All reports are located here: <i>G:\BusinessIntelligence\Temp</i></p>'
+                        '<p>Please find attached the <b>%s GFI Monthly Exception Report, %s %s</b>.</p>'
                         '<p>The GFI Reporting Team &lt;gfiReporting@bctransit.com&gt;</p>'
                         '</body></html>' ) % (s['name'],calendar.month_name[args.month],str(args.year))
                 emailReport(
