@@ -35,7 +35,7 @@ reportingSystemList = [
         {'ids':[8],'name':'Kamloops','email':['Bart Carrigan <bart.carrigan@firstgroup.com>']},
         {'ids':[7],'name':'Kelowna','email':['Alanna Zaharko <alanna.zaharko@firstgroup.com>']},
         {'ids':[24],'name':'Kitimat','email':['Phil Malnis <phil.malnis@firstgroup.com>','Crylstal Colongard <crystal.colongard@firstgroup.com>']},
-        {'ids':[5],'name':'Nanaimo','email':['Darren Marshall <dmarshall@rdn.bc.ca>','David Stowell-Smith <dstowell-smith@rdn.bc.ca>','Dave Sakai <dsakai@rdn.bc.ca>']},
+        {'ids':[5],'name':'Nanaimo','email':['Darren Marshall <dmarshall@rdn.bc.ca>','David Stowell-Smith <dstowell-smith@rdn.bc.ca>','Dave Sakai <dsakai@rdn.bc.ca>','Jamie Logan <JLogan@rdn.bc.ca>']},
         {'ids':[21],'name':'Nelson','email':['Gerry Tennant <GTennant@nelson.ca>']},
         {'ids':[18],'name':'Penticton','email':['Mike Palosky <mikepalosky@berryandsmith.com>']},
         {'ids':[13],'name':'Port Alberni','email':['Phil Atkinson <phil@patransit.pwt.ca>']},
