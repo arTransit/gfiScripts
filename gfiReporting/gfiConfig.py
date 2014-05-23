@@ -134,8 +134,7 @@ def exceptionReportSQL(location,year,month):
             "from ml left join ev on ml.loc_n=ev.loc_n and ml.id=ev.id  "
             "where   "
                 "ml.loc_n in ( %s ) and  "
-
-                "ev.ts between to_date('%s-%s-01 00:00:00', 'YYYY-MM-DD HH24:MI:SS') and last_day(to_date('%s-%s-01 23:59:59', 'YYYY-MM-DD HH24:MI:SS')) and  "
+                "ml.ts between to_date('%s-%s-01 00:00:00', 'YYYY-MM-DD HH24:MI:SS') and last_day(to_date('%s-%s-01 23:59:59', 'YYYY-MM-DD HH24:MI:SS')) and  "
                 "ev.route not in (select route from rtelst where loc_n in (%s) ) and  "
                 "((ev.curr_r >0) or (ev.rdr_c >0)) "
             "union "
@@ -147,7 +146,7 @@ def exceptionReportSQL(location,year,month):
             "from ml left join ev on ml.loc_n=ev.loc_n and ml.id=ev.id "
             "where  "
                 "ml.loc_n in ( %s ) and  "
-                "ev.ts between to_date('%s-%s-01 00:00:00', 'YYYY-MM-DD HH24:MI:SS') and last_day(to_date('%s-%s-01 23:59:59', 'YYYY-MM-DD HH24:MI:SS')) and  "
+                "ml.ts between to_date('%s-%s-01 00:00:00', 'YYYY-MM-DD HH24:MI:SS') and last_day(to_date('%s-%s-01 23:59:59', 'YYYY-MM-DD HH24:MI:SS')) and  "
                 "ev.drv not in (select drv from drvlst where loc_n in (%s) ) and "
                 "not ( ev.drv between (select v1 from gfi_range where loc_n in (9)) and (select v2 from gfi_range where loc_n in (9)) "
                 "or ev.drv in (select drv from drvlst where loc_n in (9) ) ) and "
