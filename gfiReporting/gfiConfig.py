@@ -146,17 +146,22 @@ def exceptionReportSQL(location,year,month):
             "from ml left join ev on ml.loc_n=ev.loc_n and ml.id=ev.id "
             "where  "
                 "ml.loc_n in ( %s ) and  "
-                "ml.ts between to_date('%s-%s-01 00:00:00', 'YYYY-MM-DD HH24:MI:SS') and last_day(to_date('%s-%s-01 23:59:59', 'YYYY-MM-DD HH24:MI:SS')) and  "
-                "ev.drv not in (select drv from drvlst where loc_n in (%s) ) and "
-                "not ( ev.drv between (select v1 from gfi_range where loc_n in (9)) and (select v2 from gfi_range where loc_n in (9)) "
-                "or ev.drv in (select drv from drvlst where loc_n in (9) ) ) and "
+                "ml.ts between to_date('%s-%s-01 00:00:00', 'YYYY-MM-DD HH24:MI:SS') and "
+                        "last_day(to_date('%s-%s-01 23:59:59', 'YYYY-MM-DD HH24:MI:SS')) and  "
+                "not ( "
+                    "(%s in (select loc_n from gfi_range) and "
+                    "( ev.drv between (select v1 from gfi_range where loc_n in (%s)) and "
+                                     "(select v2 from gfi_range where loc_n in (%s)))) "
+                    "or ev.drv in (select drv from drvlst where loc_n in (%s)) "
+                ") and "
                 "((ev.curr_r >0) or (ev.rdr_c >0))  "
         ") "
         "group by bus,probetime,eventtime,route,drv,curr_r,rdr_c "
         "order by bus,eventtime "
         ) % (
                 _location,str(year),str(month),str(year),str(month),_location,
-                _location,str(year),str(month),str(year),str(month),_location )
+                _location,str(year),str(month),str(year),str(month),
+                _location,_location,_location,_location )
 
 
 
