@@ -98,6 +98,98 @@ def locationString( locationIds ):
 
 
 
+"""
+###########################################################
+
+Chilliwack Route 11 Reports SQL, Header, Field outline
+
+###########################################################
+"""
+
+
+
+
+def chilliwackRoute11SQL(year,month):
+    """
+    Return SQL for exception reports using location, year, and month attributes.
+    """
+    _location = str(19)
+    _route=11
+    _busList = (2401,2238,2319)
+    _busListString = ','.join([str(s) for s in _busList])
+    
+    return (
+        "select bus,probetime,eventtime,route,drv,curr_r,rdr_c,wm_concat(issue) as issue "
+        "from ( "
+            "select "
+                "ml.bus, "
+                "TO_CHAR(ml.ts,'YYYY-MM-DD HH24:MI') probetime, "
+                "TO_CHAR(ev.ts,'YYYY-MM-DD HH24:MI') eventtime, "
+                "ev.route, "
+                "ev.drv, "
+                "ev.curr_r, "
+                "ev.rdr_c, "
+                "'route' issue "
+            "from ml left join ev on ml.loc_n=ev.loc_n and ml.id=ev.id "
+            "where "
+                "ml.loc_n in ( %s ) "
+                "and ml.ts between to_date('%s-%s-01', 'YYYY-MM-DD') and last_day(to_date('%s-%s-01', 'YYYY-MM-DD')) "
+                "and ml.bus in (%s) "
+                "and ev.route <> %s "
+                "and ((ev.curr_r >0) or (ev.rdr_c >0)) "
+            "union "
+            "select "
+                "ml.bus, "
+                "TO_CHAR(ml.ts,'YYYY-MM-DD HH24:MI') probetime, "
+                "TO_CHAR(ev.ts,'YYYY-MM-DD HH24:MI') eventtime, "
+                "ev.route, "
+                "ev.drv, "
+                "ev.curr_r, "
+                "ev.rdr_c, "
+                "'route' issue "
+            "from ml left join ev on ml.loc_n=ev.loc_n and ml.id=ev.id "
+            "where "
+                "ml.loc_n in ( %s ) "
+                "and  ml.ts between to_date('%s-%s-01', 'YYYY-MM-DD') and last_day(to_date('%s-%s-01', 'YYYY-MM-DD')) "
+                "and ml.bus not in (%s) "
+                "and ev.route = %s "
+                "and ((ev.curr_r >0) or (ev.rdr_c >0)) "
+        ") "
+        "group by bus,probetime,eventtime,route,drv,curr_r,rdr_c "
+        "order by bus,eventtime "
+        ) % (
+                _location,str(year),str(month),str(year),str(month),
+                _busListString,str(_route),
+                _location,str(year),str(month),str(year),str(month),
+                _busListString,str(_route) )
+
+
+chilliwackRoute11FieldOutline = [
+        ['bus','Bus','data','colTitle',None,None,None,None,'zebra'],
+        ['probetime','Probe Time','data','colTitle',None,None,None,None,'zebra'],
+        ['eventtime','Event time','data','colTitle',None,None,None,None,'zebra'],
+        ['route','Route','data','colTitle',None,'issue','route','datared','zebra'],
+        [None,'Route Correction','data','colTitle',None,'issue','route','datayellow','zebra'],
+        ['drv','Driver','data','colTitle',None,'issue','driver','datared','zebra'],
+        [None,'Driver Correction','data','colTitle',None,'issue','driver','datayellow','zebra'],
+        ['curr_r','Revenue','dataDecimal','colTitle',None,None,None,None,'zebra'],
+        ['rdr_c','Ridership','data','colTitle',None,None,None,None,'zebra']
+        ]
+
+
+
+def chilliwackRoute11ReportHeader(year,month):
+    location = [19]
+    return [
+        ['Monthly Exception Report','header'],
+        [calendar.month_name[month]+" "+str(year),'subHeader'],
+        [locationString( location ),'subHeader'],
+        ['','subHeader'],
+        [['Incorrect Route and Driver numbers are highlighted in RED','','',''],'headerred'], 
+        [['Please enter correct values in YELLOW cells','','',''],'headeryellow'] ] 
+
+
+
 
 """
 ###########################################################
