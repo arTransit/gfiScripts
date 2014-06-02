@@ -107,7 +107,7 @@ Chilliwack Route 11 Reports SQL, Header, Field outline
 """
 
 
-
+chilliwackRoute11busList = [3005,3006,2401,2238,2319]
 
 def chilliwackRoute11SQL(year,month):
     """
@@ -115,8 +115,7 @@ def chilliwackRoute11SQL(year,month):
     """
     _location = str(19)
     _route=11
-    _busList = (2401,2238,2319)
-    _busListString = ','.join([str(s) for s in _busList])
+    _busList= ','.join([str(s) for s in chilliwackRoute11busList])
     
     return (
         "select bus,probetime,eventtime,route,drv,curr_r,rdr_c,wm_concat(issue) as issue "
@@ -159,9 +158,9 @@ def chilliwackRoute11SQL(year,month):
         "order by bus,eventtime "
         ) % (
                 _location,str(year),str(month),str(year),str(month),
-                _busListString,str(_route),
+                _busList,str(_route),
                 _location,str(year),str(month),str(year),str(month),
-                _busListString,str(_route) )
+                _busList,str(_route) )
 
 
 chilliwackRoute11FieldOutline = [
