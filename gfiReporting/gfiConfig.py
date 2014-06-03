@@ -579,7 +579,7 @@ msrFieldOutline = [
     ['key7','KEY 7','data','colTitle',generateSumFunction,None,None,None,None],
     ['key8','KEY 8','data','colTitle',generateSumFunction,None,None,None,None],
     ['key9','KEY 9','data','colTitle',generateSumFunction,None,None,None,None],
-    ['keyast','KEY ast','data','colTitle',generateSumFunction,None,None,None,None],
+    ['keyast','KEY *','data','colTitle',generateSumFunction,None,None,None,None],
     ['keya','KEY A','data','colTitle',generateSumFunction,None,None,None,None],
     ['keyb','KEY B','data','colTitle',generateSumFunction,None,None,None,None],
     ['keyc','KEY C','data','colTitle',generateSumFunction,None,None,None,None],
