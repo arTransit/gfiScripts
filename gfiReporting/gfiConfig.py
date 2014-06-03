@@ -521,7 +521,70 @@ msrFieldOutline = [
     ['coin_c','Coin Count','data','colTitle',generateSumFunction,None,None,None,None],
     ['uncl_r','Unclassified Revenue','data','colTitle',generateSumFunction,None,None,None,None],
     ['cbxalm','Cahsbox Alarm','data','colTitle',generateSumFunction,None,None,None,None],
-    ['bypass','Bypass Alarm','data','colTitle',generateSumFunction,None,None,None,None]
+    ['bypass','Bypass Alarm','data','colTitle',generateSumFunction,None,None,None,None],
+    ['ttp1','TTP 1','data','colTitle',generateSumFunction,None,None,None,None],
+    ['ttp2','TTP 2','data','colTitle',generateSumFunction,None,None,None,None],
+    ['ttp3','TTP 3','data','colTitle',generateSumFunction,None,None,None,None],
+    ['ttp4','TTP 4','data','colTitle',generateSumFunction,None,None,None,None],
+    ['ttp5','TTP 5','data','colTitle',generateSumFunction,None,None,None,None],
+    ['ttp6','TTP 6','data','colTitle',generateSumFunction,None,None,None,None],
+    ['ttp7','TTP 7','data','colTitle',generateSumFunction,None,None,None,None],
+    ['ttp8','TTP 8','data','colTitle',generateSumFunction,None,None,None,None],
+    ['ttp9','TTP 9','data','colTitle',generateSumFunction,None,None,None,None],
+    ['ttp10','TTP 10','data','colTitle',generateSumFunction,None,None,None,None],
+    ['ttp11','TTP 11','data','colTitle',generateSumFunction,None,None,None,None],
+    ['ttp12','TTP 12','data','colTitle',generateSumFunction,None,None,None,None],
+    ['ttp13','TTP 13','data','colTitle',generateSumFunction,None,None,None,None],
+    ['ttp14','TTP 14','data','colTitle',generateSumFunction,None,None,None,None],
+    ['ttp15','TTP 15','data','colTitle',generateSumFunction,None,None,None,None],
+    ['ttp16','TTP 16','data','colTitle',generateSumFunction,None,None,None,None],
+    ['ttp17','TTP 17','data','colTitle',generateSumFunction,None,None,None,None],
+    ['ttp18','TTP 18','data','colTitle',generateSumFunction,None,None,None,None],
+    ['ttp19','TTP 19','data','colTitle',generateSumFunction,None,None,None,None],
+    ['ttp20','TTP 20','data','colTitle',generateSumFunction,None,None,None,None],
+    ['ttp21','TTP 21','data','colTitle',generateSumFunction,None,None,None,None],
+    ['ttp22','TTP 22','data','colTitle',generateSumFunction,None,None,None,None],
+    ['ttp23','TTP 23','data','colTitle',generateSumFunction,None,None,None,None],
+    ['ttp24','TTP 24','data','colTitle',generateSumFunction,None,None,None,None],
+    ['ttp25','TTP 25','data','colTitle',generateSumFunction,None,None,None,None],
+    ['ttp26','TTP 26','data','colTitle',generateSumFunction,None,None,None,None],
+    ['ttp27','TTP 27','data','colTitle',generateSumFunction,None,None,None,None],
+    ['ttp28','TTP 28','data','colTitle',generateSumFunction,None,None,None,None],
+    ['ttp29','TTP 29','data','colTitle',generateSumFunction,None,None,None,None],
+    ['ttp30','TTP 30','data','colTitle',generateSumFunction,None,None,None,None],
+    ['ttp31','TTP 31','data','colTitle',generateSumFunction,None,None,None,None],
+    ['ttp32','TTP 32','data','colTitle',generateSumFunction,None,None,None,None],
+    ['ttp33','TTP 33','data','colTitle',generateSumFunction,None,None,None,None],
+    ['ttp34','TTP 34','data','colTitle',generateSumFunction,None,None,None,None],
+    ['ttp35','TTP 35','data','colTitle',generateSumFunction,None,None,None,None],
+    ['ttp36','TTP 36','data','colTitle',generateSumFunction,None,None,None,None],
+    ['ttp37','TTP 37','data','colTitle',generateSumFunction,None,None,None,None],
+    ['ttp38','TTP 38','data','colTitle',generateSumFunction,None,None,None,None],
+    ['ttp39','TTP 39','data','colTitle',generateSumFunction,None,None,None,None],
+    ['ttp40','TTP 40','data','colTitle',generateSumFunction,None,None,None,None],
+    ['ttp41','TTP 41','data','colTitle',generateSumFunction,None,None,None,None],
+    ['ttp42','TTP 42','data','colTitle',generateSumFunction,None,None,None,None],
+    ['ttp43','TTP 43','data','colTitle',generateSumFunction,None,None,None,None],
+    ['ttp44','TTP 44','data','colTitle',generateSumFunction,None,None,None,None],
+    ['ttp45','TTP 45','data','colTitle',generateSumFunction,None,None,None,None],
+    ['ttp46','TTP 46','data','colTitle',generateSumFunction,None,None,None,None],
+    ['ttp47','TTP 47','data','colTitle',generateSumFunction,None,None,None,None],
+    ['ttp48','TTP 48','data','colTitle',generateSumFunction,None,None,None,None],
+    ['key1','KEY 1','data','colTitle',generateSumFunction,None,None,None,None],
+    ['key2','KEY 2','data','colTitle',generateSumFunction,None,None,None,None],
+    ['key3','KEY 3','data','colTitle',generateSumFunction,None,None,None,None],
+    ['key4','KEY 4','data','colTitle',generateSumFunction,None,None,None,None],
+    ['key5','KEY 5','data','colTitle',generateSumFunction,None,None,None,None],
+    ['key6','KEY 6','data','colTitle',generateSumFunction,None,None,None,None],
+    ['key7','KEY 7','data','colTitle',generateSumFunction,None,None,None,None],
+    ['key8','KEY 8','data','colTitle',generateSumFunction,None,None,None,None],
+    ['key9','KEY 9','data','colTitle',generateSumFunction,None,None,None,None],
+    ['keyast','KEY ast','data','colTitle',generateSumFunction,None,None,None,None],
+    ['keya','KEY A','data','colTitle',generateSumFunction,None,None,None,None],
+    ['keyb','KEY B','data','colTitle',generateSumFunction,None,None,None,None],
+    ['keyc','KEY C','data','colTitle',generateSumFunction,None,None,None,None],
+    ['keyd','KEY D','data','colTitle',generateSumFunction,None,None,None,None],
+    ['preset','Preset','data','colTitle',generateSumFunction,None,None,None,None]
     ]
 
 def msreportSQL(location,year,month):
@@ -538,21 +601,44 @@ def msreportSQL(location,year,month):
         "SELECT to_char(ml.tday, 'YYYY-MM-DD') serviceDate,"
         " count(ml.bus) bus_c,sum(ml.curr_r) curr_r,"
         " sum(ml.rdr_c) rdr_c, sum(ml.token_c) token_c,"
-        " sum(ml.ticket_c) ticket_c,sum(ml.pass_c) pass_c,"
+        " sum(ml.ticket_c) ticket_c, "
+        " sum(ml.pass_c - gfi_ml.misread_c - gfi_ml.passback_c - gfi_ml.invalid_c - gfi_ml.expired_c - gfi_ml.badlist_c) pass_c, "
         " sum(ml.bill_c) bill_c,"
-        " (sum(ml.nickel)+sum(ml.dime)+sum(ml.quarter)+sum(ml.half)+sum(ml.one)+sum(ml.two)) coin_c,"
+        " sum(ml.dime + ml.penny + ml.nickel + ml.quarter + ml.half + ml.sba) coin_c, "
         " sum(ml.uncl_r) uncl_r,sum(ml.cbxalm) cbxalm,"
-        " sum(ml.bypass) bypass"
+        " sum(ml.bypass) bypass, "
+        " sum(ml.ttp1) ttp1, sum(ml.ttp2) ttp2, sum(ml.ttp3) ttp3, "
+        " sum(ml.ttp4) ttp4, sum(ml.ttp5) ttp5, sum(ml.ttp6) ttp6, "
+        " sum(ml.ttp7) ttp7, sum(ml.ttp8) ttp8, sum(ml.ttp9) ttp9, "
+        " sum(ml.ttp10) ttp10, sum(ml.ttp11) ttp11, sum(ml.ttp12) ttp12, "
+        " sum(ml.ttp13) ttp13, sum(ml.ttp14) ttp14, sum(ml.ttp15) ttp15, "
+        " sum(ml.ttp16) ttp16, sum(ml.ttp17) ttp17, sum(ml.ttp18) ttp18, "
+        " sum(ml.ttp19) ttp19, sum(ml.ttp20) ttp20, sum(ml.ttp21) ttp21, "
+        " sum(ml.ttp22) ttp22, sum(ml.ttp23) ttp23, sum(ml.ttp24) ttp24, "
+        " sum(ml.ttp25) ttp25, sum(ml.ttp26) ttp26, sum(ml.ttp27) ttp27, "
+        " sum(ml.ttp28) ttp28, sum(ml.ttp29) ttp29, sum(ml.ttp30) ttp30, "
+        " sum(ml.ttp31) ttp31, sum(ml.ttp32) ttp32, sum(ml.ttp33) ttp33, "
+        " sum(ml.ttp34) ttp34, sum(ml.ttp35) ttp35, sum(ml.ttp36) ttp36, "
+        " sum(ml.ttp37) ttp37, sum(ml.ttp38) ttp38, sum(ml.ttp39) ttp39, "
+        " sum(ml.ttp40) ttp40, sum(ml.ttp41) ttp41, sum(ml.ttp42) ttp42, "
+        " sum(ml.ttp43) ttp43, sum(ml.ttp44) ttp44, sum(ml.ttp45) ttp45, "
+        " sum(ml.ttp46) ttp46, sum(ml.ttp47) ttp47, sum(ml.ttp48) ttp48, "
+        " sum(ml.key1) key1, sum(ml.key2) key2, sum(ml.key3) key3, "
+        " sum(ml.key4) key4, sum(ml.key5) key5, sum(ml.key6) key6, "
+        " sum(ml.key7) key7, sum(ml.key8) key8, sum(ml.key9) key9, "
+        " sum(ml.keyast) keyast, sum(ml.keya) keya, sum(ml.keyb) keyb, "
+        " sum(ml.keyc) keyc, sum(ml.keyd) keyd, sum(ml.fare_c) preset "
         " "
-        "FROM ml"
+        "FROM ml left join gfi_ml on ml.loc_n = gfi_ml.loc_n and ml.id=gfi_ml.id "
         " "
-        "WHERE ml.tday BETWEEN to_date('%s-%s-01 00:00:00', 'YYYY-MM-DD HH24:MI:SS')"
-        " AND last_day(to_date('%s-%s-01 23:59:59', 'YYYY-MM-DD HH24:MI:SS'))"
-        " AND ml.loc_n in ( %s )"
+        "WHERE "
+        " ml.tday BETWEEN to_date('%s-%s-01', 'YYYY-MM-DD') "
+        " AND last_day(to_date('%s-%s-01', 'YYYY-MM-DD')) "
+        " AND ml.loc_n in ( %s ) "
         " "
-        "GROUP BY to_char(ml.tday, 'YYYY-MM-DD')"
+        "GROUP BY to_char(ml.tday, 'YYYY-MM-DD') "
         " "
-        "ORDER BY to_char(ml.tday, 'YYYY-MM-DD')"
+        "ORDER BY serviceDate"
         ) % (str(year),str(month),str(year),str(month),_location)
 
 
