@@ -599,7 +599,7 @@ def msreportSQL(location,year,month):
 
     return (
         "SELECT to_char(ml.tday, 'YYYY-MM-DD') serviceDate,"
-        " count(ml.bus) bus_c,sum(ml.curr_r) curr_r,"
+        " count(distinct ml.bus) bus_c,sum(ml.curr_r) curr_r,"
         " sum(ml.rdr_c) rdr_c, sum(ml.token_c) token_c,"
         " sum(ml.ticket_c) ticket_c, "
         " sum(ml.pass_c - gfi_ml.misread_c - gfi_ml.passback_c - gfi_ml.invalid_c - gfi_ml.expired_c - gfi_ml.badlist_c) pass_c, "
