@@ -41,7 +41,6 @@ def getArgs():
 
 
 def createReport(location,year,month,filename,connection):
-    print gfiConfig.msreportSQL(location,year,month)
     gq = gfiQuery.GFIquery(connection, 
             gfiConfig.msreportSQL(location,year,month) )
     gq.execute()
