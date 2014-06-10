@@ -86,6 +86,7 @@ def emailReport(emailTo,emailFrom,emailSubject,emailBody,filepath):
     emailMsg['Subject'] = emailSubject
     emailMsg['From'] = emailFrom
     emailMsg['To'] = ', '.join(emailTo)
+    emailMsg['Bcc'] = 'gfireporting@bctransit.com'
     emailMsg.attach(email.mime.text.MIMEText(emailBody,'html'))
 
     # attach file
