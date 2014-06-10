@@ -189,109 +189,6 @@ def chilliwackRoute11ReportHeader(year,month):
 
 
 
-
-"""
-###########################################################
-
-Exception Reports SQL, Header, Field outline
-
-###########################################################
-"""
-
-
-
-exceptionReportColumnWidth=12
-
-
-def exceptionReportSQL(location,year,month):
-    """
-    Return SQL for exception reports using location, year, and month attributes.
-    """
-    
-    try:
-        _location = ','.join([str(s) for s in location])
-    except TypeError:
-        _location = str(location)
-
-
-    return (
-        "select bus,probetime,eventtime,route,drv,curr_r,rdr_c,wm_concat(issue) as issue "
-        "from ( "
-            "select  "
-                "ml.bus,  "
-                "TO_CHAR(ml.ts,'YYYY-MM-DD HH24:MI') probetime,  "
-                "TO_CHAR(ev.ts,'YYYY-MM-DD HH24:MI') eventtime,  "
-                "ev.route,ev.drv,ev.curr_r,ev.rdr_c,'route' issue  "
-            "from ml left join ev on ml.loc_n=ev.loc_n and ml.id=ev.id  "
-            "where   "
-                "ml.loc_n in ( %s ) and  "
-                "ml.ts between to_date('%s-%s-01 00:00:00', 'YYYY-MM-DD HH24:MI:SS') and last_day(to_date('%s-%s-01 23:59:59', 'YYYY-MM-DD HH24:MI:SS')) and  "
-                "ev.route not in (select route from rtelst where loc_n in (%s) ) and  "
-                "((ev.curr_r >0) or (ev.rdr_c >0)) "
-            "union "
-            "select  "
-                "ml.bus,  "
-                "TO_CHAR(ml.ts,'YYYY-MM-DD HH24:MI') probetime, "
-                "TO_CHAR(ev.ts,'YYYY-MM-DD HH24:MI') eventtime, "
-                "ev.route,ev.drv,ev.curr_r,ev.rdr_c,'driver' issue  "
-            "from ml left join ev on ml.loc_n=ev.loc_n and ml.id=ev.id "
-            "where  "
-                "ml.loc_n in ( %s ) and  "
-                "ml.ts between to_date('%s-%s-01 00:00:00', 'YYYY-MM-DD HH24:MI:SS') and "
-                        "last_day(to_date('%s-%s-01 23:59:59', 'YYYY-MM-DD HH24:MI:SS')) and  "
-                "not ( "
-                    "(%s in (select loc_n from gfi_range) and "
-                    "( ev.drv between (select v1 from gfi_range where loc_n in (%s)) and "
-                                     "(select v2 from gfi_range where loc_n in (%s)))) "
-                    "or ev.drv in (select drv from drvlst where loc_n in (%s)) "
-                ") and "
-                "((ev.curr_r >0) or (ev.rdr_c >0))  "
-        ") "
-        "group by bus,probetime,eventtime,route,drv,curr_r,rdr_c "
-        "order by bus,eventtime "
-        ) % (
-                _location,str(year),str(month),str(year),str(month),_location,
-                _location,str(year),str(month),str(year),str(month),
-                _location,_location,_location,_location )
-
-
-
-# structure of fields/columns:
-#   1 field name from SQL query
-#   2 col title used in worksheet
-#   3 format for data
-#   4 format for bottom summary
-#   5 function to generate summary function (sum, calculation, etc)
-#   6 field used for highlight test
-#   7 value to search for in highlight test field
-#   8 format to use if highlight test TRUE
-#   9 format to use for zebra formatting - note string appended to format name to get zebra format
-
-exceptionReportFieldOutline = [
-        ['bus','Bus','data','colTitle',None,None,None,None,'zebra'],
-        ['probetime','Probe Time','data','colTitle',None,None,None,None,'zebra'],
-        ['eventtime','Event time','data','colTitle',None,None,None,None,'zebra'],
-        ['route','Route','data','colTitle',None,'issue','route','datared','zebra'],
-        [None,'Route Correction','data','colTitle',None,'issue','route','datayellow','zebra'],
-        ['drv','Driver','data','colTitle',None,'issue','driver','datared','zebra'],
-        [None,'Driver Correction','data','colTitle',None,'issue','driver','datayellow','zebra'],
-        ['curr_r','Revenue','dataDecimal','colTitle',None,None,None,None,'zebra'],
-        ['rdr_c','Ridership','data','colTitle',None,None,None,None,'zebra']
-        ]
-
-
-
-def exceptionReportHeader(location,year,month):
-    return [
-        ['Monthly Exception Report','header'],
-        [calendar.month_name[month]+" "+str(year),'subHeader'],
-        [locationString( location ),'subHeader'],
-        ['','subHeader'],
-        [['Incorrect Route and Driver numbers are highlighted in RED','','',''],'headerred'], 
-        [['Please enter correct values in YELLOW cells','','',''],'headeryellow'] ] 
-
-
-
 """
 ###########################################################
 
@@ -304,7 +201,37 @@ Monthly Route Summary Reports SQL, Header, Field outline
 mrsReportColumnWidth=8.5
 
 
-def mrsreportSQL(location,year,month):
+def mrsAgassizReportSQL(location,year,month):
+    """
+    Return SQL query using given location, year, and month attributes.
+    """
+    
+    try:
+        _location = ','.join([str(s) for s in location])
+    except TypeError:
+        _location = str(location)
+
+
+    return (
+        "SELECT LPAD(TO_CHAR(route),4,'0000') route,curr_r,rdr_c,token_c,ticket_c,pass_c, "
+            "bill_c,uncl_r,dump_c, "
+            "ttp1, ttp2, ttp3, ttp4, ttp5, ttp6, ttp7, ttp8, ttp9, ttp10, "
+            "ttp11, ttp12, ttp13, ttp14, ttp15, ttp16, ttp17, ttp18, ttp19, ttp20, "
+            "ttp21, ttp22, ttp23, ttp24, ttp25, ttp26, ttp27, ttp28, ttp29, ttp30, "
+            "ttp31, ttp32, ttp33, ttp34, ttp35, ttp36, ttp37, ttp38, ttp39, ttp40, "
+            "ttp41, ttp42, ttp43, ttp44, ttp45, ttp46, ttp47, ttp48, "
+            "fare_c, "
+            "key1, key2, key3, key4, key5, key6, key7, key8, key9, "
+            "keyast, keya, keyb, keyc, keyd "
+        "FROM mrtesum "
+        "WHERE mrtesum.loc_n in (%s) "
+            "AND route = 11 "
+            "AND mrtesum.mday between to_date('%s-%s-01', 'YYYY-MM-DD') and last_day(to_date('%s-%s-01', 'YYYY-MM-DD'))"
+        "ORDER BY route"
+        ) % (_location,str(year),str(month),str(year),str(month) )
+
+
+def mrsChilliwackReportSQL(location,year,month):
     """
     Return SQL query using given location, year, and month attributes.
     """
@@ -375,6 +302,7 @@ def mrsreportSQL(location,year,month):
         "FROM mrtesum "
         "WHERE mrtesum.loc_n in (%s) "
             "AND route >=0 "
+            "AND route <> 11 "
             "AND mrtesum.mday between to_date('%s-%s-01', 'YYYY-MM-DD') and last_day(to_date('%s-%s-01', 'YYYY-MM-DD')) "
         "ORDER BY route"
         ) % (_location,str(year),str(month),str(year),str(month),
@@ -478,12 +406,21 @@ mrsrFieldOutline = [
 
 
 
-def mrsrReportHeader(location,year,month):
+def mrsrAgassizReportHeader(location,year,month):
 
     return [
         ['Monthly Route Summary Report','header'],
         [calendar.month_name[month]+" "+str(year),'subHeader'],
-        [locationString( location ),'subHeader'],
+        ['Agassiz','subHeader'],
+        ['','subHeader' ] ]
+
+
+def mrsrChilliwackReportHeader(location,year,month):
+
+    return [
+        ['Monthly Route Summary Report','header'],
+        [calendar.month_name[month]+" "+str(year),'subHeader'],
+        ['Chilliwack','subHeader'],
         ['','subHeader' ] ]
 
 
