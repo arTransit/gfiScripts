@@ -132,7 +132,6 @@ if __name__ == '__main__':
             sys.stdout.flush()
             _filename = '%s/%s/MonthlyException_%s_%s.xlsx' % (
                     REPORT_BASE_DIRECTORY,s['name'],str(args.year),''.join(['000',str(args.month)])[-2:])
-            print '_filename: %s' % _filename
 
             generateExceptionReport.createReport(s['ids'],args.year,args.month,_filename,args.connection)
 
