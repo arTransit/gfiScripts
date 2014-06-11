@@ -239,11 +239,14 @@ def exceptionReportSQL(location,year,month):
                 "ml.loc_n in ( %s ) and  "
                 "ml.ts between (to_date('%s-%s-01', 'YYYY-MM-DD') -7) and "
                         "last_day(to_date('%s-%s-01', 'YYYY-MM-DD')) and  "
-                "not ( "
-                    "(%s in (select loc_n from gfi_range) and "
-                    "( ev.drv between (select v1 from gfi_range where loc_n in (%s)) and "
-                                     "(select v2 from gfi_range where loc_n in (%s)))) "
-                    "or ev.drv in (select drv from drvlst where loc_n in (%s)) "
+                "ev.drv not in ( "
+                    "select drv "
+                    "from gfi_range left join "
+                        "(select rownum drv from all_objects where rownum < 9999) dids "
+                        "on dids.drv >= gfi_range.v1 and dids.drv <= gfi_range.v2 "
+                    "where gfi_range.loc_n in ( %s ) "
+                    "union "
+                    "select drv from drvlst where loc_n in ( %s ) "
                 ") and "
                 "((ev.curr_r >0) or (ev.rdr_c >0))  "
         ") "
@@ -252,7 +255,7 @@ def exceptionReportSQL(location,year,month):
         ) % (
                 _location,str(year),str(month),str(year),str(month),_location,
                 _location,str(year),str(month),str(year),str(month),
-                _location,_location,_location,_location )
+                _location,_location )
 
 
 
