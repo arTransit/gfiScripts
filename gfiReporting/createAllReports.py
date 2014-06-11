@@ -22,7 +22,7 @@ FROM_EMAIL = 'gfiReporting@bctransit.com'
 #REPORT_BASE_DIRECTORY='G:/BusinessIntelligence/Temp/GFIreporting/'
 #REPORT_BASE_DIRECTORY='C:/Temp/GFIreporting'
 #REPORT_BASE_DIRECTORY='G:/Public/GFI/GFIreporting'
-REPORT_BASE_DIRECTORY='G:/Public/GFI/x'
+REPORT_BASE_DIRECTORY='G:/Public/GFI'
 
 
 reportingSystemList = [
