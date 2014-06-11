@@ -132,9 +132,9 @@ if __name__ == '__main__':
             sys.stdout.flush()
             _filename = '%s/%s/MonthlyException_%s_%s.xlsx' % (
                     REPORT_BASE_DIRECTORY,s['name'],str(args.year),''.join(['000',str(args.month)])[-2:])
-            generateExceptionReport.createReport(s['ids'],args.year,args.month,_filename,args.connection)
+            print '_filename: %s' % _filename
 
-            break
+            generateExceptionReport.createReport(s['ids'],args.year,args.month,_filename,args.connection)
 
             if args.email:
                 emailBody = (
@@ -166,9 +166,7 @@ if __name__ == '__main__':
             sys.stdout.flush()
             _filename = '%s/%s/MonthlySummaryReport_%s_%s.xlsx' % (
                     REPORT_BASE_DIRECTORY,s['name'],str(args.year),''.join(['000',str(args.month)])[-2:])
-            print '_filename: %s' % str(_filename)
             generateMSR.createReport(s['ids'],args.year,args.month,_filename,args.connection)
-            break
     else:
         print "No Monthly Summary Reports"
     print '\n\n'
@@ -187,7 +185,6 @@ if __name__ == '__main__':
                     REPORT_BASE_DIRECTORY,s['name'],str(args.year),''.join(['000',str(args.month)])[-2:])
             generateMRSR.createReport(s['ids'],args.year,args.month,_filename,args.connection)
 
-            break
     else:
         print "No Monthly Route Summary Reports"
     print '\n\n'

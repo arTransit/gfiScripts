@@ -242,7 +242,7 @@ def exceptionReportSQL(location,year,month):
                 "ev.drv not in ( "
                     "select drv "
                     "from gfi_range left join "
-                        "(select rownum drv from all_objects where rownum < 9999) dids "
+                        "(select rownum drv from all_objects where rownum < 99) dids "
                         "on dids.drv >= gfi_range.v1 and dids.drv <= gfi_range.v2 "
                     "where gfi_range.loc_n in ( %s ) "
                     "union "
