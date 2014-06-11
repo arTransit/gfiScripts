@@ -19,19 +19,21 @@ import email, email.encoders,email.mime.text,email.mime.base
 
 SMTPSERVER = '10.170.3.119'
 FROM_EMAIL = 'gfiReporting@bctransit.com'
-REPORT_BASE_DIRECTORY='G:/BusinessIntelligence/Temp/GFIreporting/'
+#REPORT_BASE_DIRECTORY='G:/BusinessIntelligence/Temp/GFIreporting/'
 #REPORT_BASE_DIRECTORY='C:/Temp/GFIreporting'
-#REPORTBASEDIRECTORY='G:/Public/GFI/GFIreporting'
+#REPORT_BASE_DIRECTORY='G:/Public/GFI/GFIreporting'
+REPORT_BASE_DIRECTORY='G:/Public/GFI/x'
 
 
 reportingSystemList = [
+        {'ids':[1,2],'name':'Victoria_Langford','email':['gfiReporting@bctransit.com']},
         {'ids':[6],'name':'Abbotsford','email':['Gabe Colusso <gabe.colusso@firstgroup.com>']},
         {'ids':[14],'name':'Campbell River','email':['Bill Richards <crtransit@shaw.ca>']},
         {'ids':[19],'name':'Chilliwack','email':['Gabe Colusso <gabe.colusso@firstgroup.com>']},
         {'ids':[12],'name':'Comox','email':['Darren Richards <watsonandash@shaw.ca>']},
-        {'ids':[10],'name':'Cowichan Valley','email':['Colin Oakes <colin.oakes@firstgroup.com>']},
+        {'ids':[10],'name':'Duncan','email':['Colin Oakes <colin.oakes@firstgroup.com>']},
         {'ids':[20],'name':'Cranbrook','email':['Lynda Lawrence <lynda@suncity.bc.ca>','John Darula <john.darula@suncity.bc.ca>']},
-        {'ids':[25],'name':'Fort StJohn','email':['Shelley Lindaas <shelleyl@peacetransit.pwt.ca>']},
+        {'ids':[25],'name':'FSJ','email':['Shelley Lindaas <shelleyl@peacetransit.pwt.ca>']},
         {'ids':[8],'name':'Kamloops','email':['Bart Carrigan <bart.carrigan@firstgroup.com>']},
         {'ids':[7],'name':'Kelowna','email':['Alanna Zaharko <alanna.zaharko@firstgroup.com>']},
         {'ids':[24],'name':'Kitimat','email':['Phil Malnis <phil.malnis@firstgroup.com>','Crylstal Colongard <crystal.colongard@firstgroup.com>']},
@@ -43,7 +45,7 @@ reportingSystemList = [
         {'ids':[9],'name':'Prince George','email':['Erik Madsen <erikm@pgtransit.pwt.ca>']},
         {'ids':[23],'name':'Prince Rupert','email':['Darby Minhas <darbara.minhas@firstgroup.com>']},
         {'ids':[4],'name':'Squamish','email':['Christine Darling <christined@squamishtransit.pwt.ca>']},
-        {'ids':[16],'name':'Sunshine Coast','email':['Amanda Walkley <amanda.walkey@scrd.ca>']},
+        {'ids':[16],'name':'Sunshine','email':['Amanda Walkley <amanda.walkey@scrd.ca>']},
         {'ids':[22],'name':'Terrace','email':['Marilyn Ouellet <marilyn.ouellet@firstgroup.com>']},
         {'ids':[11],'name':'Trail','email':['Sharman Thomas <sharman.trailtransit@shawlink.ca>']},
         {'ids':[17],'name':'Vernon','email':['Cindy Laidlaw <cindy.laidlaw@firstgroup.com>','Doreen Stanton <doreen.stanton@firstgroup.com>']},
@@ -132,6 +134,8 @@ if __name__ == '__main__':
                     REPORT_BASE_DIRECTORY,s['name'],str(args.year),''.join(['000',str(args.month)])[-2:])
             generateExceptionReport.createReport(s['ids'],args.year,args.month,_filename,args.connection)
 
+            break
+
             if args.email:
                 emailBody = (
                         '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" '
@@ -160,9 +164,11 @@ if __name__ == '__main__':
         for s in reportingSystemList:
             sys.stdout.write('. ')
             sys.stdout.flush()
-            _filename = '%s/%s/MonthlySummary_%s_%s.xlsx' % (
+            _filename = '%s/%s/MonthlySummaryReport_%s_%s.xlsx' % (
                     REPORT_BASE_DIRECTORY,s['name'],str(args.year),''.join(['000',str(args.month)])[-2:])
+            print '_filename: %s' % str(_filename)
             generateMSR.createReport(s['ids'],args.year,args.month,_filename,args.connection)
+            break
     else:
         print "No Monthly Summary Reports"
     print '\n\n'
@@ -177,9 +183,11 @@ if __name__ == '__main__':
         for s in reportingSystemList:
             sys.stdout.write('. ')
             sys.stdout.flush()
-            _filename = '%s/%s/MonthlyRouteSummary_%s_%s.xlsx' % (
+            _filename = '%s/%s/MonthlyRouteSummaryReport_%s_%s.xlsx' % (
                     REPORT_BASE_DIRECTORY,s['name'],str(args.year),''.join(['000',str(args.month)])[-2:])
             generateMRSR.createReport(s['ids'],args.year,args.month,_filename,args.connection)
+
+            break
     else:
         print "No Monthly Route Summary Reports"
     print '\n\n'

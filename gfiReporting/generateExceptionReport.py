@@ -41,7 +41,10 @@ def createReport(location,year,month,filename,credentials):
             gfiConfig.exceptionReportSQL(location,year,month) )
     gq.execute()
     if not gq.status:
-        print "DB error"
+        print "DB error: Exception report"
+        print 'Loc: %s, year: %s, month: %s, filename: %s' % (
+                str(location),str(year),str(month),str(filename))
+        print gfiConfig.exceptionReportSQL(location,year,month) 
         sys.exit(1)
 
     xlsx = gfiXLSX.gfiSpreadsheet(
