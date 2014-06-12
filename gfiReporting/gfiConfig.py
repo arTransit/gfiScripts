@@ -193,6 +193,130 @@ def chilliwackRoute11ReportHeader(year,month):
 """
 ###########################################################
 
+Driver Reports SQL, Header, Field outline
+
+###########################################################
+"""
+
+
+
+driverReportColumnWidth=14.4
+
+
+def bestDriverReportSQL(location,year,month):
+    """
+    Return SQL for driver reports using location, year, and month attributes.
+    """
+    
+    try:
+        _location = ','.join([str(s) for s in location])
+    except TypeError:
+        _location = str(location)
+
+    return (
+        "select rownum,drv,per,uncl_r,curr_r "
+        "from ( "
+        "    select "
+        "        drv, "
+        "        (uncl_r/curr_r *100) per, "
+        "        uncl_r, "
+        "        curr_r "
+        "    from ( "
+        "        select  "
+        "            drv, "
+        "            sum(ml.uncl_r) uncl_r, "
+        "            sum(ml.curr_r) curr_r "
+        "        from ml left join ev on ml.loc_n=ev.loc_n and ml.id=ev.id "
+        "        where "
+        "            ml.loc_n in (%s) and "
+        "            ev.ts between to_date('%s-%s-1', 'YYYY-MM-DD') and last_day(to_date('%s-%s-1', 'YYYY-MM-DD')) "
+        "        group by drv "
+        "    ) "
+        "    where curr_r >100 "
+        "    order by per "
+        ") "
+        "where rownum <=10 "
+        ) % ( _location,str(year),str(month),str(year),str(month) )
+
+def worstDriverReportSQL(location,year,month):
+    """
+    Return SQL for driver reports using location, year, and month attributes.
+    """
+    
+    try:
+        _location = ','.join([str(s) for s in location])
+    except TypeError:
+        _location = str(location)
+
+    return (
+        "select rownum,drv,per,uncl_r,curr_r "
+        "from ( "
+        "    select "
+        "        drv, "
+        "        (uncl_r/curr_r *100) per, "
+        "        uncl_r, "
+        "        curr_r "
+        "    from ( "
+        "        select "
+        "            drv, "
+        "            sum(ml.uncl_r) uncl_r, "
+        "            sum(ml.curr_r) curr_r "
+        "        from ml left join ev on ml.loc_n=ev.loc_n and ml.id=ev.id "
+        "        where "
+        "            ml.loc_n in (%s) and "
+        "            ev.ts between to_date('%s-%s-1', 'YYYY-MM-DD') and last_day(to_date('%s-%s-1', 'YYYY-MM-DD')) "
+        "        group by drv "
+        "    ) "
+        "    where curr_r >100 "
+        "    order by per desc "
+        ") "
+        "where rownum <=10 "
+        ) % ( _location,str(year),str(month),str(year),str(month) )
+
+
+
+# structure of fields/columns:
+#   1 field name from SQL query
+#   2 col title used in worksheet
+#   3 format for data
+#   4 format for bottom summary
+#   5 function to generate summary function (sum, calculation, etc)
+#   6 field used for highlight test
+#   7 value to search for in highlight test field
+#   8 format to use if highlight test TRUE
+#   9 format to use for zebra formatting - note string appended to format name to get zebra format
+
+driverReportFieldOutline = [
+        ['rownum','Order','data','colTitle',None,None,None,None,None],
+        ['drv','Driver','data','colTitle',None,None,None,None,None],
+        ['per','Unclassified/Current Revenue (%)','dataDecimal','colTitle',None,None,None,None,None],
+        ['uncl_r','Unclassified Revenue','dataDecimal','colTitle',None,None,None,None,None],
+        ['curr_r','Classified Revenue','dataDecimal','colTitle',None,None,None,None,None]
+        ]
+
+
+def bestDriverReportHeader(location,year,month):
+    return [
+        ['Driver Unclassified Statistics Report','header'],
+        [locationString( location ),'subHeader'],
+        ['10 Best Drivers','subHeader'],
+        [calendar.month_name[month]+" "+str(year),'subHeader'],
+        ['','subHeader'] ]
+
+
+def worstDriverReportHeader(location,year,month):
+    return [
+        ['Driver Unclassified Statistics Report','header'],
+        [locationString( location ),'subHeader'],
+        ['10 Worst Drivers','subHeader'],
+        [calendar.month_name[month]+" "+str(year),'subHeader'],
+        ['','subHeader'] ]
+
+
+
+"""
+###########################################################
+
 Exception Reports SQL, Header, Field outline
 
 ###########################################################
@@ -281,8 +405,6 @@ exceptionReportFieldOutline = [
         ['curr_r','Revenue','dataDecimal','colTitle',None,None,None,None,'zebra'],
         ['rdr_c','Ridership','data','colTitle',None,None,None,None,'zebra']
         ]
-
-
 
 def exceptionReportHeader(location,year,month):
     return [
