@@ -51,7 +51,7 @@ cellFormats = {
         'dataDecimalGrey':{'bg_color':'E0E0E0','font_size':9,'align':'right','valign':'vcenter',
             'num_format':'#,###,##0.00'},
         'dataPercent':{'font_size':9,'align':'center','valign':'vcenter',
-            'num_format':'0.00%'},
+            'num_format':'0.0%'},
         'dataPercentTitle':{'bold':True,'font_size':9,'align':'center','valign':'vcenter',
             'num_format':'0.00%','top':True,'bottom':True, 'bg_color':'#EEEEEE'},
         'data':{'font_size':9,'align':'center','valign':'vcenter','num_format':0},
@@ -218,18 +218,19 @@ def bestDriverReportSQL(location,year,month):
         "from ( "
         "    select "
         "        drv, "
-        "        (uncl_r/curr_r *100) per, "
+        "        (uncl_r/curr_r) per, "
         "        uncl_r, "
         "        curr_r "
         "    from ( "
         "        select  "
-        "            drv, "
-        "            sum(ml.uncl_r) uncl_r, "
-        "            sum(ml.curr_r) curr_r "
-        "        from ml left join ev on ml.loc_n=ev.loc_n and ml.id=ev.id "
+        "            ev.drv, "
+        "            sum(ev.uncl_r) uncl_r, "
+        "            sum(ev.curr_r) curr_r "
+        "        from ev left join ml on ml.loc_n=ev.loc_n and ml.id=ev.id "
         "        where "
-        "            ml.loc_n in (%s) and "
-        "            ev.ts between to_date('%s-%s-1', 'YYYY-MM-DD') and last_day(to_date('%s-%s-1', 'YYYY-MM-DD')) "
+        "            ev.loc_n in (%s) and "
+        "            ev.curr_r >0 and "
+        "            ml.tday between to_date('%s-%s-01', 'YYYY-MM-DD') and last_day(to_date('%s-%s-01', 'YYYY-MM-DD')) "
         "        group by drv "
         "    ) "
         "    where curr_r >100 "
@@ -253,18 +254,19 @@ def worstDriverReportSQL(location,year,month):
         "from ( "
         "    select "
         "        drv, "
-        "        (uncl_r/curr_r *100) per, "
+        "        (uncl_r/curr_r) per, "
         "        uncl_r, "
         "        curr_r "
         "    from ( "
-        "        select "
-        "            drv, "
-        "            sum(ml.uncl_r) uncl_r, "
-        "            sum(ml.curr_r) curr_r "
-        "        from ml left join ev on ml.loc_n=ev.loc_n and ml.id=ev.id "
+        "        select  "
+        "            ev.drv, "
+        "            sum(ev.uncl_r) uncl_r, "
+        "            sum(ev.curr_r) curr_r "
+        "        from ev left join ml on ml.loc_n=ev.loc_n and ml.id=ev.id "
         "        where "
-        "            ml.loc_n in (%s) and "
-        "            ev.ts between to_date('%s-%s-1', 'YYYY-MM-DD') and last_day(to_date('%s-%s-1', 'YYYY-MM-DD')) "
+        "            ev.loc_n in (%s) and "
+        "            ev.curr_r >0 and "
+        "            ml.tday between to_date('%s-%s-01', 'YYYY-MM-DD') and last_day(to_date('%s-%s-01', 'YYYY-MM-DD')) "
         "        group by drv "
         "    ) "
         "    where curr_r >100 "
@@ -289,7 +291,7 @@ def worstDriverReportSQL(location,year,month):
 driverReportFieldOutline = [
         ['rownum','Order','data','colTitle',None,None,None,None,None],
         ['drv','Driver','data','colTitle',None,None,None,None,None],
-        ['per','Unclassified/Current Revenue (%)','dataDecimal','colTitle',None,None,None,None,None],
+        ['per','Unclassified/Current Revenue (%)','dataPercent','colTitle',None,None,None,None,None],
         ['uncl_r','Unclassified Revenue','dataDecimal','colTitle',None,None,None,None,None],
         ['curr_r','Classified Revenue','dataDecimal','colTitle',None,None,None,None,None]
         ]
