@@ -23,7 +23,7 @@ def getArgs():
     argsPsr = argparse.ArgumentParser(description='Generate Chilliwack Route 11 Exception Report')
     argsPsr.add_argument('-y','--year',required=True,type=int,help='eg 2014')
     argsPsr.add_argument('-m','--month',required=True,type=int,help='eg 12')
-    argsPsr.add_argument('-f','--file',required=True,help='filename')
+    # argsPsr.add_argument('-f','--file',required=True,help='filename')
     argsPsr.add_argument('-c','--credentials',required=True,help='user/pass@GFI')
     args = argsPsr.parse_args()
     args.error = False
@@ -66,8 +66,11 @@ if __name__ == '__main__':
         print "Not completed."
         sys.exit(1)
 
-    args.location=19
-    createReport(args.location,args.year,args.month,args.file,args.credentials)
+    _location= [19]
+    _filename = '%s_GFIroute11exceptionReport_%s_%s.xlsx' % (
+            gfiConfig.locationString( _location ), str(args.year),
+            ('000' + str(args.month) )[-2:] )
+    createReport(_location,args.year,args.month,_filename,args.credentials)
 
     print "Completed."
     sys.exit(0)
