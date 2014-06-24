@@ -22,7 +22,7 @@ systemList = {
         13:"Port Alberni",
         14:"Campbell River",
         15:"Powell River",
-        16:"Sunshine Valley",
+        16:"Sunshine Coast",
         17:"Vernon",
         18:"Penticton",
         19:"Chilliwack",
@@ -45,6 +45,10 @@ cellFormats = {
             'num_format':'#,###,##0'},
         'dataDecimal':{'font_size':9,'align':'right','valign':'vcenter',
             'num_format':'#,###,##0.00'},
+        'dataDecimalhot':{'bg_color':'FF5757','font_size':9,'align':'right','valign':'vcenter',
+            'num_format':'#,###,##0.00'},
+        'dataDecimalmed':{'bg_color':'FFCDCD','font_size':9,'align':'right','valign':'vcenter',
+            'num_format':'#,###,##0.00'},
         'dataDecimalzebra':{'font_size':9,'top':1,'align':'right','valign':'vcenter',
             'num_format':'#,###,##0.00'},
         'dataDecimalTitle':{'bold':True,'font_size':9,'align':'right','valign':'vcenter',
@@ -60,8 +64,12 @@ cellFormats = {
         'datazebra':{'font_size':9,'top':1,'align':'center','valign':'vcenter','num_format':0},
         'datagrey':{'bg_color':'E0E0E0','font_size':9,'align':'center','valign':'vcenter','num_format':0},
         'datared':{'bg_color':'FF9E9E','font_size':9,'align':'center','valign':'vcenter','num_format':0},
+        'datahot':{'bg_color':'FF5757','font_size':9,'align':'center','valign':'vcenter','num_format':0},
+        'datamed':{'bg_color':'FFCDCD','font_size':9,'align':'center','valign':'vcenter','num_format':0},
         'dataredzebra':{'bg_color':'FF9E9E','top':1,'font_size':9,'align':'center','valign':'vcenter','num_format':0},
         'headerred':{'bg_color':'FF9E9E','font_size':9,'align':'left','valign':'vcenter','num_format':0},
+        'headerhot':{'bg_color':'FF5757','font_size':9,'align':'left','valign':'vcenter','num_format':0},
+        'headermed':{'bg_color':'FFCDCD','font_size':9,'align':'left','valign':'vcenter','num_format':0},
         'headeryellow':{'bg_color':'FFFF80','font_size':9,'align':'left','valign':'vcenter','num_format':0},
         'datayellow':{'bg_color':'FFFF80','font_size':9,'align':'center','valign':'vcenter','num_format':0},
         'datayellowzebra':{'bg_color':'FFFF80','top':1,'font_size':9,'align':'center','valign':'vcenter','num_format':0}
@@ -94,7 +102,7 @@ def locationString( locationIds ):
     """
 
     _locationString = ''
-    for l in locationIds: _locationString += " / " + systemList[l]
+    for l in locationIds: _locationString += " - " + systemList[l]
     return _locationString[3:]
 
 
@@ -113,7 +121,7 @@ Bill Counting Error Report SQL, Header, Field outline
 billcountingReportColumnWidth=9
 
 
-def billcountingReportSQL(location,year,month):
+def billcountingReportSQL(location,year):
     """
     Return SQL for exception reports using location, year, and month attributes.
     """
@@ -125,166 +133,39 @@ def billcountingReportSQL(location,year,month):
 
 
     return (
-        "select * from ( "
+        "select * from ("
+        "select bus, fbx_n,transitmonth,sum(bill_c) bill_sum,avg(bill_c) bill_av "
+        "from ( "
         "    select "
-        "        ev.drv, "
-        "        sum(ev.curr_r) curr_r, "
-        "        sum(ev.uncl_r) uncl_r, "
-        "        sum(ev.dump_c) dump_c, "
-        "        sum(ev.fare_c) fare_c, "
-        "        sum(ev.key1) key1, "
-        "        sum(ev.key2) key2, "
-        "        sum(ev.key3) key3, "
-        "        sum(ev.key4) key4, "
-        "        sum(ev.key5) key5, "
-        "        sum(ev.key6) key6, "
-        "        sum(ev.key7) key7, "
-        "        sum(ev.key8) key8, "
-        "        sum(ev.key9) key9, "
-        "        sum(ev.keyast) keyast, "
-        "        sum(ev.keya) keya, "
-        "        sum(ev.keyb) keyb, "
-        "        sum(ev.keyc) keyc, "
-        "        sum(ev.keyd) keyd, "
-        "        sum(ev.ttp1) ttp1, "
-        "        sum(ev.ttp2) ttp2, "
-        "        sum(ev.ttp3) ttp3, "
-        "        sum(ev.ttp4) ttp4, "
-        "        sum(ev.ttp5) ttp5, "
-        "        sum(ev.ttp6) ttp6, "
-        "        sum(ev.ttp7) ttp7, "
-        "        sum(ev.ttp8) ttp8, "
-        "        sum(ev.ttp9) ttp9, "
-        "        sum(ev.ttp10) ttp10, "
-        "        sum(ev.ttp11) ttp11, "
-        "        sum(ev.ttp12) ttp12, "
-        "        sum(ev.ttp13) ttp13, "
-        "        sum(ev.ttp14) ttp14, "
-        "        sum(ev.ttp15) ttp15, "
-        "        sum(ev.ttp16) ttp16, "
-        "        sum(ev.ttp17) ttp17, "
-        "        sum(ev.ttp18) ttp18, "
-        "        sum(ev.ttp19) ttp19, "
-        "        sum(ev.ttp20) ttp20, "
-        "        sum(ev.ttp21) ttp21, "
-        "        sum(ev.ttp22) ttp22, "
-        "        sum(ev.ttp23) ttp23, "
-        "        sum(ev.ttp24) ttp24, "
-        "        sum(ev.ttp25) ttp25, "
-        "        sum(ev.ttp26) ttp26, "
-        "        sum(ev.ttp27) ttp27, "
-        "        sum(ev.ttp28) ttp28, "
-        "        sum(ev.ttp29) ttp29, "
-        "        sum(ev.ttp30) ttp30, "
-        "        sum(ev.ttp31) ttp31, "
-        "        sum(ev.ttp32) ttp32, "
-        "        sum(ev.ttp33) ttp33, "
-        "        sum(ev.ttp34) ttp34, "
-        "        sum(ev.ttp35) ttp35, "
-        "        sum(ev.ttp36) ttp36, "
-        "        sum(ev.ttp37) ttp37, "
-        "        sum(ev.ttp38) ttp38, "
-        "        sum(ev.ttp39) ttp39, "
-        "        sum(ev.ttp40) ttp40, "
-        "        sum(ev.ttp41) ttp41, "
-        "        sum(ev.ttp42) ttp42, "
-        "        sum(ev.ttp43) ttp43, "
-        "        sum(ev.ttp44) ttp44, "
-        "        sum(ev.ttp45) ttp45, "
-        "        sum(ev.ttp46) ttp46, "
-        "        sum(ev.ttp47) ttp47, "
-        "        sum(ev.ttp48) ttp48 "
-        "    from ev "
-        "    where "
-        "        ev.loc_n=%s and "
-        "        ev.ts between to_date('%s-%s-01','YYYY-MM-DD') and last_day(to_date('%s-%s-01','YYYY-MM-DD'))+1 "
-        "    group by ev.drv "
+        "        bus, fbx_n,to_char(tday,'YYYY-MM') transitmonth,to_char(tday,'YYYY-MM-DD') transitday,sum(bill_c) bill_c "
+        "    from ml "
+        "    where  "
+        "        ml.loc_n in (%s) and "
+        "        ml.tday between to_date('%s-01-01','YYYY-MM-DD') and to_date('%s-01-01','YYYY-MM-DD') "
+        "    group by bus, fbx_n, to_char(tday,'YYYY-MM'), to_char(tday,'YYYY-MM-DD') "
         ") "
-        "where "
-        "    (curr_r >0) or "
-        "    (drv in (select drvlst.drv from drvlst where drvlst.loc_n=%s)) "
-        "order by drv "
-        ) % (
-                _location,str(year),str(month),str(year),str(month),
-                _location )
+        "group by bus, fbx_n,transitmonth "
+        "order by bus,fbx_n,transitmonth "
+        ") "
+                ) % (
+                _location,str(year),str(int(year) +1) )
 
 
 billcountingReportFieldOutline = [
-        ['drv','Driver','data','colTitle',None,None,None,None,None],
-        ['curr_r','Current Revenue','dataDecimal','dataDecimalTitle',generateSumFunction,None,None,None,None],
-        ['uncl_r','Unclassified Revenue','dataDecimal','dataDecimalTitle',generateSumFunction,None,None,None,None],
-        ['dump_c','Dump Count','data','colTitle',generateSumFunction,None,None,None,None],
-        ['fare_c','Preset Count','data','colTitle',generateSumFunction,None,None,None,None],
-        ['key1','Key 1','data','colTitle',generateSumFunction,None,None,None,None],
-        ['key2','Key 2','data','colTitle',generateSumFunction,None,None,None,None],
-        ['key3','Key 3','data','colTitle',generateSumFunction,None,None,None,None],
-        ['key4','Key 4','data','colTitle',generateSumFunction,None,None,None,None],
-        ['key5','Key 5','data','colTitle',generateSumFunction,None,None,None,None],
-        ['key6','Key 6','data','colTitle',generateSumFunction,None,None,None,None],
-        ['key7','Key 7','data','colTitle',generateSumFunction,None,None,None,None],
-        ['key8','Key 8','data','colTitle',generateSumFunction,None,None,None,None],
-        ['key9','Key 9','data','colTitle',generateSumFunction,None,None,None,None],
-        ['keyast','Key *','data','colTitle',generateSumFunction,None,None,None,None],
-        ['keya','Key A','data','colTitle',generateSumFunction,None,None,None,None],
-        ['keyb','Key B','data','colTitle',generateSumFunction,None,None,None,None],
-        ['keyc','Key C','data','colTitle',generateSumFunction,None,None,None,None],
-        ['keyd','Key D','data','colTitle',generateSumFunction,None,None,None,None],
-        ['ttp1','TTP 1','data','colTitle',generateSumFunction,None,None,None,None],
-        ['ttp2','TTP 2','data','colTitle',generateSumFunction,None,None,None,None],
-        ['ttp3','TTP 3','data','colTitle',generateSumFunction,None,None,None,None],
-        ['ttp4','TTP 4','data','colTitle',generateSumFunction,None,None,None,None],
-        ['ttp5','TTP 5','data','colTitle',generateSumFunction,None,None,None,None],
-        ['ttp6','TTP 6','data','colTitle',generateSumFunction,None,None,None,None],
-        ['ttp7','TTP 7','data','colTitle',generateSumFunction,None,None,None,None],
-        ['ttp8','TTP 8','data','colTitle',generateSumFunction,None,None,None,None],
-        ['ttp9','TTP 9','data','colTitle',generateSumFunction,None,None,None,None],
-        ['ttp10','TTP 10','data','colTitle',generateSumFunction,None,None,None,None],
-        ['ttp11','TTP 11','data','colTitle',generateSumFunction,None,None,None,None],
-        ['ttp12','TTP 12','data','colTitle',generateSumFunction,None,None,None,None],
-        ['ttp13','TTP 13','data','colTitle',generateSumFunction,None,None,None,None],
-        ['ttp14','TTP 14','data','colTitle',generateSumFunction,None,None,None,None],
-        ['ttp15','TTP 15','data','colTitle',generateSumFunction,None,None,None,None],
-        ['ttp16','TTP 16','data','colTitle',generateSumFunction,None,None,None,None],
-        ['ttp17','TTP 17','data','colTitle',generateSumFunction,None,None,None,None],
-        ['ttp18','TTP 18','data','colTitle',generateSumFunction,None,None,None,None],
-        ['ttp19','TTP 19','data','colTitle',generateSumFunction,None,None,None,None],
-        ['ttp20','TTP 20','data','colTitle',generateSumFunction,None,None,None,None],
-        ['ttp21','TTP 21','data','colTitle',generateSumFunction,None,None,None,None],
-        ['ttp22','TTP 22','data','colTitle',generateSumFunction,None,None,None,None],
-        ['ttp23','TTP 23','data','colTitle',generateSumFunction,None,None,None,None],
-        ['ttp24','TTP 24','data','colTitle',generateSumFunction,None,None,None,None],
-        ['ttp25','TTP 25','data','colTitle',generateSumFunction,None,None,None,None],
-        ['ttp26','TTP 26','data','colTitle',generateSumFunction,None,None,None,None],
-        ['ttp27','TTP 27','data','colTitle',generateSumFunction,None,None,None,None],
-        ['ttp28','TTP 28','data','colTitle',generateSumFunction,None,None,None,None],
-        ['ttp29','TTP 29','data','colTitle',generateSumFunction,None,None,None,None],
-        ['ttp30','TTP 30','data','colTitle',generateSumFunction,None,None,None,None],
-        ['ttp31','TTP 31','data','colTitle',generateSumFunction,None,None,None,None],
-        ['ttp32','TTP 32','data','colTitle',generateSumFunction,None,None,None,None],
-        ['ttp33','TTP 33','data','colTitle',generateSumFunction,None,None,None,None],
-        ['ttp34','TTP 34','data','colTitle',generateSumFunction,None,None,None,None],
-        ['ttp35','TTP 35','data','colTitle',generateSumFunction,None,None,None,None],
-        ['ttp36','TTP 36','data','colTitle',generateSumFunction,None,None,None,None],
-        ['ttp37','TTP 37','data','colTitle',generateSumFunction,None,None,None,None],
-        ['ttp38','TTP 38','data','colTitle',generateSumFunction,None,None,None,None],
-        ['ttp39','TTP 39','data','colTitle',generateSumFunction,None,None,None,None],
-        ['ttp40','TTP 40','data','colTitle',generateSumFunction,None,None,None,None],
-        ['ttp41','TTP 41','data','colTitle',generateSumFunction,None,None,None,None],
-        ['ttp42','TTP 42','data','colTitle',generateSumFunction,None,None,None,None],
-        ['ttp43','TTP 43','data','colTitle',generateSumFunction,None,None,None,None],
-        ['ttp44','TTP 44','data','colTitle',generateSumFunction,None,None,None,None],
-        ['ttp45','TTP 45','data','colTitle',generateSumFunction,None,None,None,None],
-        ['ttp46','TTP 46','data','colTitle',generateSumFunction,None,None,None,None],
-        ['ttp47','TTP 47','data','colTitle',generateSumFunction,None,None,None,None],
-        ['ttp48','TTP 48','data','colTitle',generateSumFunction,None,None,None,None]
+        ['fbx_n','Farebox ID','data','colTitle',None,None,None,None,None],
+        ['bus','Bus ID','data','colTitle',None,None,None,None,None]
         ]
 
-def billcountingReportHeader(location,year,month):
+def billcountingReportHeader(location,year):
     return [
-        ['Driver Key Report','header'],
-        [calendar.month_name[month]+" "+str(year),'subHeader'],
+        ['GFI Bill Counting Report','header'],
+        ['Total & average daily bills counted per farebox/bus per month','subHeader'],
         [locationString( location ),'subHeader'],
-        ['','subHeader'] ]
+        [str(year),'subHeader'],
+        ['','subHeader']
+        [['Average daily bill count > 10','','',''],'headermed'], 
+        [['Average daily bill count > 20','','',''],'headerhot'] ] 
+
 
 
 
@@ -788,7 +669,7 @@ exceptionReportFieldOutline = [
 
 def exceptionReportHeader(location,year,month):
     return [
-        ['Monthly Exception Report','header'],
+        ['GFI Monthly Exception Report','header'],
         [calendar.month_name[month]+" "+str(year),'subHeader'],
         [locationString( location ),'subHeader'],
         ['','subHeader'],
