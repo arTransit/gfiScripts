@@ -53,7 +53,8 @@ def createReport(location,year,month,filename,credentials):
             header=gfiConfig.exceptionReportHeader(location,year,month),
             columnWidth=gfiConfig.exceptionReportColumnWidth,
             zebraFormatting=True,
-            zebraField='bus')
+            zebraField='bus',
+            noDataLabel='No exceptions found.')
     xlsx.formats = gfiConfig.cellFormats
     xlsx.fieldOutline = gfiConfig.exceptionReportFieldOutline 
     xlsx.data = gq.data

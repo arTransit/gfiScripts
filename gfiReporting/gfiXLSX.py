@@ -47,6 +47,7 @@ class gfiSpreadsheet:
     summaryRow=False
     zebraFormatting = False
     zebraField = False
+    noDataLabel='No data'
 
     def __init__(self,**kwargs):
         if kwargs.get('filename'): self.filename = kwargs.get('filename')
@@ -59,6 +60,7 @@ class gfiSpreadsheet:
         if kwargs.get('summaryRow'): self.summaryRow= kwargs.get('summaryRow')
         if kwargs.get('zebraFormatting'): self.zebraFormatting = kwargs.get('zebraFormatting')
         if kwargs.get('zebraField'): self.zebraField = kwargs.get('zebraField')
+        if kwargs.get('noDataLabel'): self.noDataLabel= kwargs.get('noDataLabel')
 
         self.workbook = xlsxwriter.Workbook(self.filename)
         self.worksheet = self.workbook.add_worksheet(self.sheetTitle)
@@ -99,38 +101,43 @@ class gfiSpreadsheet:
         zebraFieldValue = None
         zebraOn = False  # flag for zebra formatting
 
-        for r in range(0,_numDataRows):
-            col = 0
+        if _numDataRows >0:
+            for r in range(0,_numDataRows):
+                col = 0
 
-            # alternate zebra formatting based on zebra field
-            if self.zebraFormatting and (self.data[self.zebraField][r] != zebraFieldValue):
-                zebraFieldValue = self.data[self.zebraField][r]
-                zebraOn = True
-            else:
-                zebraOn = False
-
-            for field,name,format,headerFormat,formula,highlightField,highlightValue,highlightFormat,zebraFormat in self.fieldOutline:
-
-                # test type of formatting required for cell
-                if highlightField and (highlightValue in self.data[highlightField][r]):
-                    _formatName = highlightFormat
+                # alternate zebra formatting based on zebra field
+                if self.zebraFormatting and (self.data[self.zebraField][r] != zebraFieldValue):
+                    zebraFieldValue = self.data[self.zebraField][r]
+                    zebraOn = True
                 else:
-                    _formatName = format
+                    zebraOn = False
 
-                if zebraOn: _formatName += zebraFormat
+                for field,name,format,headerFormat,formula,highlightField,highlightValue,highlightFormat,zebraFormat in self.fieldOutline:
 
-                # test if data from query or empty field
-                if type(field) == types.FunctionType:
-                    self.worksheet.write_formula(row,col, field(row=row, col=col),self.workbookFormats[_formatName])
-                else:
-                    if field:
-                        _data = self.data[field][r]
-                    else: 
-                        _data = ''
-                    self.worksheet.write(row,col,_data,self.workbookFormats[_formatName])
+                    # test type of formatting required for cell
+                    if highlightField and (highlightValue in self.data[highlightField][r]):
+                        _formatName = highlightFormat
+                    else:
+                        _formatName = format
 
-                col += 1
+                    if zebraOn: _formatName += zebraFormat
+
+                    # test if data from query or empty field
+                    if type(field) == types.FunctionType:
+                        self.worksheet.write_formula(row,col, field(row=row, col=col),self.workbookFormats[_formatName])
+                    else:
+                        if field:
+                            _data = self.data[field][r]
+                        else: 
+                            _data = ''
+                        self.worksheet.write(row,col,_data,self.workbookFormats[_formatName])
+
+                    col += 1
+                row += 1
+        else:
             row += 1
+            self.worksheet.write(row,0,self.noDataLabel)
+            row += 2
 
         # output summary row
         if self.summaryRow:
