@@ -130,7 +130,7 @@ if __name__ == '__main__':
         for s in reportingSystemList:
             sys.stdout.write('. ')
             sys.stdout.flush()
-            _filename = '%s/%s/%s_GFIMonthlyExceptionReport_%s_%s.xlsx' % (
+            _filename = '%s/%s/%s_GFImonthlyExceptionReport_%s_%s.xlsx' % (
                     REPORT_BASE_DIRECTORY,
                     s['name'],
                     s['name'],
@@ -167,8 +167,12 @@ if __name__ == '__main__':
         for s in reportingSystemList:
             sys.stdout.write('. ')
             sys.stdout.flush()
-            _filename = '%s/%s/MonthlySummaryReport_%s_%s.xlsx' % (
-                    REPORT_BASE_DIRECTORY,s['name'],str(args.year),''.join(['000',str(args.month)])[-2:])
+            _filename = '%s/%s/%s_GFImonthlySummaryReport%s_%s.xlsx' % (
+                    REPORT_BASE_DIRECTORY,
+                    s['name'],
+                    s['name'],
+                    str(args.year),
+                    ''.join(['000',str(args.month)])[-2:])
             generateMSR.createReport(s['ids'],args.year,args.month,_filename,args.connection)
     else:
         print "No Monthly Summary Reports"
@@ -184,8 +188,12 @@ if __name__ == '__main__':
         for s in reportingSystemList:
             sys.stdout.write('. ')
             sys.stdout.flush()
-            _filename = '%s/%s/MonthlyRouteSummaryReport_%s_%s.xlsx' % (
-                    REPORT_BASE_DIRECTORY,s['name'],str(args.year),''.join(['000',str(args.month)])[-2:])
+            _filename = '%s/%s/%s_GFImonthlyRouteSummaryReport_%s_%s.xlsx' % (
+                    REPORT_BASE_DIRECTORY,
+                    s['name'],
+                    s['name'],
+                    str(args.year),
+                    ''.join(['000',str(args.month)])[-2:])
             generateMRSR.createReport(s['ids'],args.year,args.month,_filename,args.connection)
 
     else:
