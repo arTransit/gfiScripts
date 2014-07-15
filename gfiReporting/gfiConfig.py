@@ -162,7 +162,7 @@ def billcountingReportHeader(location,year):
         ['Total & average daily bills counted per farebox/bus per month','subHeader'],
         [locationString( location ),'subHeader'],
         [str(year),'subHeader'],
-        ['','subHeader']
+        ['','subHeader'],
         [['Average daily bill count > 10','','',''],'headermed'], 
         [['Average daily bill count > 20','','',''],'headerhot'] ] 
 
