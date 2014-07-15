@@ -265,13 +265,13 @@ def driverkeyReportSQL(location,year,month):
         "        sum(ev.ttp48) ttp48 "
         "    from ev "
         "    where "
-        "        ev.loc_n=%s and "
+        "        ev.loc_n in (%s) and "
         "        ev.ts between to_date('%s-%s-01','YYYY-MM-DD') and last_day(to_date('%s-%s-01','YYYY-MM-DD'))+1 "
         "    group by ev.drv "
         ") "
         "where "
         "    (curr_r >0) or "
-        "    (drv in (select drvlst.drv from drvlst where drvlst.loc_n=%s)) "
+        "    (drv in (select drvlst.drv from drvlst where drvlst.loc_n in (%s))) "
         "order by drv "
         ) % (
                 _location,str(year),str(month),str(year),str(month),
