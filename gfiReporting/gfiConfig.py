@@ -733,7 +733,7 @@ def mrsreportSQL(location,year,month):
         "FROM mrtesum "
         "WHERE mrtesum.loc_n in (%s) "
             "AND route =-3 "
-            "AND mrtesum.mday between to_date('%s-%s-01', 'YYYY-MM-DD') and last_day(to_date('%s-%s-01', 'YYYY-MM-DD')) "
+            "AND mrtesum.mday between to_date('%s-%s-01', 'YYYY-MM-DD') and last_day(to_date('%s-%s-01', 'YYYY-MM-DD'))+1 "
         "UNION "
         "SELECT 'Other' route,SUM(curr_r) curr_r,SUM(rdr_c) rdr_c,SUM(token_c) token_c, "
             "SUM(ticket_c) ticket_c, SUM(pass_c) pass_c,SUM(bill_c) bill_c, "
@@ -756,7 +756,7 @@ def mrsreportSQL(location,year,month):
         "FROM mrtesum "
         "WHERE mrtesum.loc_n in (%s) "
             "AND route =-2 "
-            "AND mrtesum.mday between to_date('%s-%s-01', 'YYYY-MM-DD') and last_day(to_date('%s-%s-01', 'YYYY-MM-DD')) "
+            "AND mrtesum.mday between to_date('%s-%s-01', 'YYYY-MM-DD') and last_day(to_date('%s-%s-01', 'YYYY-MM-DD'))+1 "
         "UNION "
         "SELECT LPAD(TO_CHAR(route),4,'0000') route,curr_r,rdr_c,token_c,ticket_c,pass_c, "
             "bill_c,uncl_r,dump_c, "
@@ -771,7 +771,7 @@ def mrsreportSQL(location,year,month):
         "FROM mrtesum "
         "WHERE mrtesum.loc_n in (%s) "
             "AND route >=0 "
-            "AND mrtesum.mday between to_date('%s-%s-01', 'YYYY-MM-DD') and last_day(to_date('%s-%s-01', 'YYYY-MM-DD')) "
+            "AND mrtesum.mday between to_date('%s-%s-01', 'YYYY-MM-DD') and last_day(to_date('%s-%s-01', 'YYYY-MM-DD'))+1 "
         "ORDER BY route"
         ) % (_location,str(year),str(month),str(year),str(month),
                 _location,str(year),str(month),str(year),str(month),
