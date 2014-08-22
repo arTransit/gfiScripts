@@ -47,7 +47,7 @@ def createReport(location,year,month,filename,credentials):
         print gfiConfig.exceptionReportSQL(location,year,month) 
         sys.exit(1)
 
-    print gfiConfig.exceptionReportSQL(location,year,month) 
+    #print gfiConfig.exceptionReportSQL(location,year,month) 
 
     xlsx = gfiXLSX.gfiSpreadsheet(
             filename=filename,
