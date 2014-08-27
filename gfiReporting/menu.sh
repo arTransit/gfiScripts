@@ -42,7 +42,7 @@ declare -A LOCLIST=(
 declare -A EXCEPTIONACTIONS=( 
     # use $'' notation for newlines
     [6]=$'Abbotsford:\nSend driver unclassified report to Gabe Colusso <gabe.colusso@firstgroup.com>' 
-    [19]=$'Chilliwack:\nSend Chilliwack MRS to Rod Sanderson <SANDERSO@chilliwack.com>; Jennifer Kooistra <kooistra@chilliwack.com>; Johann VanSchaik <Johann_VanSchaik@BCTransit.Com>\n\nSend Agassiz (just route 11) MRS to Alison Stewart <astewart@fvrd.bc.ca>; Siri Bertelsen <sbertels@fvrd.bc.ca>; Rod Sanderson <SANDERSO@chilliwack.com>; Jennifer Kooistra <kooistra@chilliwack.com>; Mike Veenbaas <mveenbaas@fvrd.bc.ca>; Johann VanSchaik <Johann_VanSchaik@BCTransit.Com>' 
+    [19]=$'Chilliwack:\nSend Chilliwack MRS to\n Rod Sanderson <SANDERSO@chilliwack.com>; Jennifer Kooistra <kooistra@chilliwack.com>; Johann VanSchaik <Johann_VanSchaik@BCTransit.Com>\n\nSend Agassiz (just route 11) MRS to\n Alison Stewart <astewart@fvrd.bc.ca>; Barclay Pitkethly <bpitkethly@fvrd.bc.ca>;accountsreceivable@fvrd.bc.ca; Jennifer Kooistra <kooistra@chilliwack.com>; Mike Veenbaas <mveenbaas@fvrd.bc.ca>; Johann VanSchaik <Johann_VanSchaik@BCTransit.Com>'
     [7]=$'Kelowna:\nSend driver unclassified report to Bill Harding <bill.harding@firstgroup.com>' 
     [4]=$'Squamish:\nSend driver key report to Christine Darling <christined@squamishtransit.pwt.ca>' 
     [17]=$'Vernon:\nSend MRS to Cindy Laidlaw <cindy.laidlaw@firstgroup.com>; Doreen Stanton <doreen.stanton@firstgroup.com>' 
@@ -188,6 +188,20 @@ function driverUnclassified {
 }
 
 
+function driverKey {
+    echo -e "\nDriver key report"
+}
+
+
+function chilliwackMRSR {
+    echo -e "\nChilliwack/Agassiz monthly route summary report"
+    echo "   will be generated in current directory"
+    echo "python genChilliwackMRSR.py -y $QYEAR -m $QMONTH -c $QCONNECTION"
+    python genChilliwackMRSR.py -y $QYEAR -m $QMONTH -c $QCONNECTION
+    QLOC=19
+}
+
+
 while : ; do
     #clear
     echo -e "\n\n\n"
@@ -212,6 +226,8 @@ while : ; do
     echo "  [4] monthly route summary report"
     echo "  [5] exception report"
     echo "  [6] driver unclassified report (best & worst)"
+    echo "  [7] driver key report"
+    echo "  [8] Chilliwack/Agassiz monthly route summary report (MRSR)"
     echo -n "--> "
     read x
 
@@ -231,6 +247,8 @@ while : ; do
         4) monthlyRouteSummaryReport;read x;;
         5) exceptionReport;read x;; 
         6) driverUnclassified;read x;; 
+        7) driverKey;read x;; 
+        8) chilliwackMRSR;read x;; 
         *) echo "Huh?";
            echo "Press a key..."; read;;
     esac
