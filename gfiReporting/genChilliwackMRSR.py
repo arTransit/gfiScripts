@@ -36,9 +36,6 @@ def getArgs():
 
 
 def createChilliwackReport(location,year,month,filename,connection):
-    print chilliwackConfig.mrsChilliwackReportSQL(location,year,month) 
-    print
-
     gq = gfiQuery.GFIquery(connection, 
             chilliwackConfig.mrsChilliwackReportSQL(location,year,month) )
     gq.execute()
