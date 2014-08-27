@@ -87,8 +87,8 @@ if __name__ == '__main__':
         print "Not completed."
         sys.exit(1)
 
-    _chilliwackFilename = 'Chilliwack_MonthlyRouteSummary_' +str(args.year)+'-'+str(args.month) +'.xlsx'
-    _agassizFilename = 'Agassiz_MonthlyRouteSummary_' +str(args.year)+'-'+str(args.month) +'.xlsx'
+    _chilliwackFilename = 'Chilliwack_MonthlyRouteSummary_' +str(args.year)+'-'+('00'+str(args.month))[-2:] +'.xlsx'
+    _agassizFilename = 'Agassiz_MonthlyRouteSummary_' +str(args.year)+'-'+('00'+str(args.month))[-2:] +'.xlsx'
     createChilliwackReport(19,args.year,args.month,_chilliwackFilename,args.connection)
     createAgassizReport(19,args.year,args.month,_agassizFilename,args.connection)
 
