@@ -62,9 +62,6 @@ def createChilliwackReport(location,year,month,filename,connection):
 
 
 def createAgassizReport(location,year,month,filename,connection):
-    print chilliwackConfig.mrsAgassizReportSQL(location,year,month)
-    print
-
     gq = gfiQuery.GFIquery(connection, 
             chilliwackConfig.mrsAgassizReportSQL(location,year,month) )
     gq.execute()
