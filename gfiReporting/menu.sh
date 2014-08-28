@@ -2,8 +2,8 @@
 
 PUBLICBASEDIR="/cygdrive/g/Public/GFI"
 GFILOG="~/gfi/gfiReporting/gfi.log"
-QMONTH=$(date +'%m')
-QYEAR=$(date +"%Y")
+QMONTH=$(date --date "last month" +'%m')
+QYEAR=$(date --date "last month" +"%Y")
 QLOC=1
 QDIR="."
 QCONNECTION="gfi/gfi@gfi"
