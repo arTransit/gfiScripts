@@ -103,6 +103,14 @@ function logException {
         echo "Thanks - these updates have been entered into the GFI database."
         echo
         echo "${EXCEPTIONACTIONS[$QLOC]}"
+
+        echo "Generate MSR and MRSR?"
+        read x
+        if [ "$x" = 'y' ]; then
+            QDIR="$PUBLICBASEDIR/${LOCLIST[$QLOC]}"
+            monthlySummaryReport
+            monthlyRouteSummaryReport
+        fi
     else
         echo "Nothing logged"
     fi
