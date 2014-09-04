@@ -73,10 +73,10 @@ function getFileVersion {
     local EXTENSION="$3"
     local FILEVERSION
 
-    FILEVERSION=$(ls $DIR/$FILEBASE*.$EXTENSION | sed  -n "s/^.*_v\([0-9]*\)\.${EXTENSION}/\1/p" | sort -nr | head -1)
+    FILEVERSION=$(ls "$DIR/$FILEBASE"*".$EXTENSION" | sed  -n "s/^.*_v\([0-9]*\)\.${EXTENSION}/\1/p" | sort -nr | head -1)
     if [[ -n $FILEVERSION && $FILEVERSION -gt "0" ]]; then
         echo $FILEVERSION
-    elif [ -f $DIR/$FILEBASE.$EXTENSION ]; then
+    elif [ -f "$DIR/$FILEBASE.$EXTENSION" ]; then
         echo 1
     else
         echo 0
@@ -138,10 +138,10 @@ function monthlySummaryReport {
     echo -e "\nMonthly summary report"
     QFILE="${LOCLIST[$QLOC]}_GFImonthlySummaryReport_$QYEAR-${QMONTH}"
     echo "Filename: $QFILE"
-    FILEVERSION=$(getFileVersion $QDIR $QFILE "xlsx")
+    FILEVERSION=$(getFileVersion "$QDIR" "$QFILE" "xlsx")
 
     if [ $FILEVERSION -gt "0" ]; then
-        echo "Current version is $FILEVERSION -- Increment version number?"
+        echo -n "Current version is $FILEVERSION -- Increment version number?"
         read v
         if [ $v = "y" ]; then
             ((FILEVERSION++))
@@ -156,10 +156,10 @@ function monthlyRouteSummaryReport {
     echo -e "\nMonthly route summary report"
     QFILE="${LOCLIST[$QLOC]}_GFImonthlyRouteSummaryReport_$QYEAR-${QMONTH}"
     echo "Filename: $QFILE"
-    FILEVERSION=$(getFileVersion $QDIR $QFILE "xlsx")
+    FILEVERSION=$(getFileVersion "$QDIR" "$QFILE" "xlsx")
 
     if [ $FILEVERSION -gt "0" ]; then
-        echo "Current version is $FILEVERSION -- Increment version number?"
+        echo -n "Current version is $FILEVERSION -- Increment version number?"
         read v
         if [ $v = "y" ]; then
             ((FILEVERSION++))
@@ -174,10 +174,10 @@ function exceptionReport {
     echo -e "\nException report"
     QFILE="${LOCLIST[$QLOC]}_GFIexceptionReport_$QYEAR-${QMONTH}"
     echo "Filename: $QFILE"
-    FILEVERSION=$(getFileVersion $QDIR $QFILE "xlsx")
+    FILEVERSION=$(getFileVersion "$QDIR" "$QFILE" "xlsx")
 
     if [ $FILEVERSION -gt "0" ]; then
-        echo "Current version is $FILEVERSION -- Increment version number?"
+        echo -n "Current version is $FILEVERSION -- Increment version number?"
         read v
         if [ $v = "y" ]; then
             ((FILEVERSION++))
