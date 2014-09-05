@@ -44,6 +44,7 @@ def createReport(location,year,month,filename,connection):
     gq = gfiQuery.GFIquery(connection, 
             gfiConfig.msreportSQL(location,year,month) )
     gq.execute()
+
     if not gq.status:
         print "DB error"
         sys.exit(1)

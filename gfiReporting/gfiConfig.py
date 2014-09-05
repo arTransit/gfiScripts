@@ -912,11 +912,11 @@ msrFieldOutline = [
     ['bus_c','Bus Probed','data','colTitle',generateSumFunction,None,None,None,None],
     ['curr_r','Current Revenue','dataDecimal','dataDecimalTitle',generateSumFunction,None,None,None,None],
     ['rdr_c','Ridership','data','colTitle',generateSumFunction,None,None,None,None],
-    ['token_c','Token Count','data','colTitle',generateSumFunction,None,None,None,None],
-    ['ticket_c','Ticket Count','data','colTitle',generateSumFunction,None,None,None,None],
-    ['pass_c','Pass Count','data','colTitle',generateSumFunction,None,None,None,None],
-    ['bill_c','Bill Count','data','colTitle',generateSumFunction,None,None,None,None],
-    ['coin_c','Coin Count','data','colTitle',generateSumFunction,None,None,None,None],
+    ['token_t','Token Count','data','colTitle',generateSumFunction,None,None,None,None],
+    ['ticket_t','Ticket Count','data','colTitle',generateSumFunction,None,None,None,None],
+    ['pass_t','Pass Count','data','colTitle',generateSumFunction,None,None,None,None],
+    ['bill_t','Bill Count','data','colTitle',generateSumFunction,None,None,None,None],
+    ['coin_t','Coin Count','data','colTitle',generateSumFunction,None,None,None,None],
     ['uncl_r','Unclassified Revenue','dataDecimal','dataDecimalTitle',generateSumFunction,None,None,None,None],
     ['cbxalm','Cahsbox Alarm','data','colTitle',generateSumFunction,None,None,None,None],
     ['bypass','Bypass Alarm','data','colTitle',generateSumFunction,None,None,None,None],
@@ -998,53 +998,29 @@ def msreportSQL(location,year,month):
     return (
         "select dates.servicedate,data.* "
         "from ( "
-            "select "
-            "to_char(to_date('%s-%s-01','YYYY-MM-DD') + rownum -1,'YYYY-MM-DD') servicedate "
+            "select to_char(to_date('%s-%s-01','YYYY-MM-DD') + rownum -1,'YYYY-MM-DD') servicedate "
             "from all_objects "
-            "where rownum <= last_day(to_date('%s-%s-01','YYYY-MM-DD'))+0.99999 - to_date('%s-%s-01','YYYY-MM-DD') "
-        ") dates "
-        "left join ( "
-            "SELECT to_char(ml.tday, 'YYYY-MM-DD') x_servicedate,"
-            " count(distinct ml.bus) bus_c,sum(ml.curr_r) curr_r,"
-            " sum(ml.rdr_c) rdr_c, sum(ml.token_c) token_c,"
-            " sum(ml.ticket_c) ticket_c, "
-            " sum(ml.pass_c - gfi_ml.misread_c - gfi_ml.passback_c - gfi_ml.invalid_c - gfi_ml.expired_c - gfi_ml.badlist_c) pass_c, "
-            " sum(ml.bill_c) bill_c,"
-            " sum(ml.dime + ml.penny + ml.nickel + ml.quarter + ml.half + ml.sba) coin_c, "
-            " sum(ml.uncl_r) uncl_r,sum(ml.cbxalm) cbxalm,"
-            " sum(ml.bypass) bypass, "
-            " sum(ml.ttp1) ttp1, sum(ml.ttp2) ttp2, sum(ml.ttp3) ttp3, "
-            " sum(ml.ttp4) ttp4, sum(ml.ttp5) ttp5, sum(ml.ttp6) ttp6, "
-            " sum(ml.ttp7) ttp7, sum(ml.ttp8) ttp8, sum(ml.ttp9) ttp9, "
-            " sum(ml.ttp10) ttp10, sum(ml.ttp11) ttp11, sum(ml.ttp12) ttp12, "
-            " sum(ml.ttp13) ttp13, sum(ml.ttp14) ttp14, sum(ml.ttp15) ttp15, "
-            " sum(ml.ttp16) ttp16, sum(ml.ttp17) ttp17, sum(ml.ttp18) ttp18, "
-            " sum(ml.ttp19) ttp19, sum(ml.ttp20) ttp20, sum(ml.ttp21) ttp21, "
-            " sum(ml.ttp22) ttp22, sum(ml.ttp23) ttp23, sum(ml.ttp24) ttp24, "
-            " sum(ml.ttp25) ttp25, sum(ml.ttp26) ttp26, sum(ml.ttp27) ttp27, "
-            " sum(ml.ttp28) ttp28, sum(ml.ttp29) ttp29, sum(ml.ttp30) ttp30, "
-            " sum(ml.ttp31) ttp31, sum(ml.ttp32) ttp32, sum(ml.ttp33) ttp33, "
-            " sum(ml.ttp34) ttp34, sum(ml.ttp35) ttp35, sum(ml.ttp36) ttp36, "
-            " sum(ml.ttp37) ttp37, sum(ml.ttp38) ttp38, sum(ml.ttp39) ttp39, "
-            " sum(ml.ttp40) ttp40, sum(ml.ttp41) ttp41, sum(ml.ttp42) ttp42, "
-            " sum(ml.ttp43) ttp43, sum(ml.ttp44) ttp44, sum(ml.ttp45) ttp45, "
-            " sum(ml.ttp46) ttp46, sum(ml.ttp47) ttp47, sum(ml.ttp48) ttp48, "
-            " sum(ml.key1) key1, sum(ml.key2) key2, sum(ml.key3) key3, "
-            " sum(ml.key4) key4, sum(ml.key5) key5, sum(ml.key6) key6, "
-            " sum(ml.key7) key7, sum(ml.key8) key8, sum(ml.key9) key9, "
-            " sum(ml.keyast) keyast, sum(ml.keya) keya, sum(ml.keyb) keyb, "
-            " sum(ml.keyc) keyc, sum(ml.keyd) keyd, sum(ml.fare_c) preset "
-            " "
-            "FROM ml left join gfi_ml on ml.loc_n = gfi_ml.loc_n and ml.id=gfi_ml.id "
-            " "
+            "where rownum <= last_day(to_date('%s-%s-01','YYYY-MM-DD'))+0.99999 - to_date('%s-%s-01','YYYY-MM-DD') +1 "
+        ") dates left join ( "
+            "SELECT "
+                "to_char(gs.tday, 'YYYY-MM-DD') x_servicedate, "
+                "bus_c, curr_r, rdr_c, token_t, ticket_t, pass_t, "
+                "bill_t, coin_t, uncl_r, cbxalm, bypass, "
+                "ttp1, ttp2, ttp3, ttp4, ttp5, ttp6, ttp7, ttp8, ttp9, ttp10, "
+                "ttp11, ttp12, ttp13, ttp14, ttp15, ttp16, ttp17, ttp18, ttp19, ttp20, "
+                "ttp21, ttp22, ttp23, ttp24, ttp25, ttp26, ttp27, ttp28, ttp29, ttp30, "
+                "ttp31, ttp32, ttp33, ttp34, ttp35, ttp36, ttp37, ttp38, ttp39, ttp40, "
+                "ttp41, ttp42, ttp43, ttp44, ttp45, ttp46, ttp47, ttp48, "
+                "key1, key2, key3, key4, key5, "
+                "key6, key7, key8, key9, keyast, "
+                "keya, keyb, keyc, keyd, "
+                "fare_c preset "
+            "FROM gs "
             "WHERE "
-            " ml.tday BETWEEN to_date('%s-%s-01', 'YYYY-MM-DD') "
-            " AND last_day(to_date('%s-%s-01', 'YYYY-MM-DD'))+0.99999 "
-            " AND ml.loc_n in ( %s ) "
-            " "
-            "GROUP BY to_char(ml.tday, 'YYYY-MM-DD') "
-        ") data "
-            "on dates.servicedate=data.x_servicedate "
+                "gs.fs=0 and "
+                "gs.tday BETWEEN to_date('%s-%s-01', 'YYYY-MM-DD') and last_day(to_date('%s-%s-01', 'YYYY-MM-DD'))+0.99999  AND "
+                "gs.loc_n in ( %s ) "
+        ") data on dates.servicedate=data.x_servicedate "
         "order by dates.servicedate "
         ) % (str(year),str(month),str(year),str(month),str(year),str(month),
                 str(year),str(month),str(year),str(month),_location)
