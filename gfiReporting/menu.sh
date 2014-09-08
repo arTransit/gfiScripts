@@ -11,7 +11,7 @@ QCONNECTION="gfi/gfi@gfi"
 LOGFILE=gfiLog.txt
 
 declare -A LOCLIST=( 
-    [1,2]="Victoria_Langford" 
+    [1 2]="Victoria_Langford" 
     [1]="Victoria" 
     [2]="Langford" 
     [6]="Abbotsford" 
