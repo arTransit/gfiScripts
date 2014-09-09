@@ -1,14 +1,13 @@
 #!/usr/bin/bash
 
 PUBLICBASEDIR="/cygdrive/g/Public/GFI"
-GFILOG="~/gfi/gfiReporting/gfi.log"
+GFILOG="/home/aross/gfi/gfiReporting/gfi.log"
 QMONTH=$(date --date "last month" +'%m')
 QYEAR=$(date --date "last month" +"%Y")
 QLOC=1
 QDIR="."
 QCONNECTION="gfi/gfi@gfi"
 
-LOGFILE=gfiLog.txt
 
 declare -A LOCLIST=( 
     [1 2]="Victoria_Langford" 
@@ -85,7 +84,7 @@ function getFileVersion {
 
 
 function logThis {
-    echo "$1" >> $GFILOG
+    echo "$1" >> "$GFILOG"
 }
 
 
