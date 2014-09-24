@@ -27,9 +27,9 @@ REPORT_BASE_DIRECTORY='G:/Public/GFI'
 
 reportingSystemList = [
         {'ids':[1,2],'name':'Victoria_Langford','email':['gfiReporting@bctransit.com']},
-        {'ids':[6],'name':'Abbotsford','email':['Gabe Colusso <gabe.colusso@firstgroup.com>']},
+        {'ids':[6],'name':'Abbotsford','email':['Gabe Colusso <gabe.colusso@firstgroup.com>','Lanine Matthews<Lanine.Matthews@firstgroup.com>']},
         {'ids':[14],'name':'Campbell River','email':['Bill Richards <crtransit@shaw.ca>']},
-        {'ids':[19],'name':'Chilliwack','email':['Gabe Colusso <gabe.colusso@firstgroup.com>']},
+        {'ids':[19],'name':'Chilliwack','email':['Gabe Colusso <gabe.colusso@firstgroup.com>','Lanine Matthews<Lanine.Matthews@firstgroup.com>']},
         {'ids':[12],'name':'Comox','email':['Darren Richards <watsonandash@shaw.ca>']},
         {'ids':[10],'name':'Duncan','email':['Colin Oakes <colin.oakes@firstgroup.com>']},
         {'ids':[20],'name':'Cranbrook','email':['Lynda Lawrence <lynda@suncity.bc.ca>','John Darula <john.darula@suncity.bc.ca>']},
