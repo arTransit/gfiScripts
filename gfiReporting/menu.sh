@@ -205,7 +205,19 @@ function chilliwackMRSR {
     echo "   will be generated in current directory"
     echo "python genChilliwackMRSR.py -y $QYEAR -m $QMONTH -c $QCONNECTION"
     python genChilliwackMRSR.py -y $QYEAR -m $QMONTH -c $QCONNECTION
+    QDIR="."
     QLOC=19
+}
+
+
+function chilliwack11Exception {
+    echo -e "\nChilliwack/Agassiz route 11 exception report"
+    echo "   will be generated in current directory"
+    echo "python genChilliwackRoute11exception.py -y $QYEAR -m $QMONTH -c $QCONNECTION"
+    python genChilliwackRoute11exception.py -y $QYEAR -m $QMONTH -c $QCONNECTION
+    QDIR="."
+    QLOC=19
+
 }
 
 
@@ -232,6 +244,7 @@ while : ; do
     echo "  [3] monthly summary report"
     echo "  [4] monthly route summary report"
     echo "  [5] exception report"
+    echo "  [11] Chilliwack route 11 exception report"
     echo "  [6] driver unclassified report (best & worst)"
     echo "  [7] driver key report"
     echo "  [8] Chilliwack/Agassiz monthly route summary report (MRSR)"
@@ -256,6 +269,7 @@ while : ; do
         6) driverUnclassified;read x;; 
         7) driverKey;read x;; 
         8) chilliwackMRSR;read x;; 
+        11) chilliwack11Exception;read x;; 
         *) echo "Huh?";
            echo "Press a key..."; read;;
     esac
