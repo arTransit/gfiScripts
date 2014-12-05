@@ -197,6 +197,8 @@ function driverUnclassified {
 
 function driverKey {
     echo -e "\nDriver key report"
+    echo "python generateDriverkeyReport.py -y $QYEAR -m $QMONTH -l $QLOC -c $QCONNECTION"
+    python generateDriverkeyReport.py -y $QYEAR -m $QMONTH -l $QLOC -c $QCONNECTION
 }
 
 

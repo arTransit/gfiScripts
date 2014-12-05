@@ -60,6 +60,7 @@ def createReport(location,year,month,filename,credentials):
     xlsx.data = gq.data
     xlsx.generateXLSX()
     xlsx.close()
+    print "Completed."
 
 
 
@@ -75,7 +76,6 @@ if __name__ == '__main__':
 
     createReport(args.location,args.year,args.month,_filename,args.credentials)
 
-    print "Completed."
     sys.exit(0)
 
 
