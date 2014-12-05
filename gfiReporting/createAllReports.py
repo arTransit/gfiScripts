@@ -128,7 +128,9 @@ if __name__ == '__main__':
             print "  no email"
 
         for s in reportingSystemList:
-            sys.stdout.write('. ')
+            #sys.stdout.write('. ')
+            sys.stdout.write(s['name'])
+            sys.stdout.write('\n')
             sys.stdout.flush()
             _filename = '%s/%s/%s_GFImonthlyExceptionReport_%s_%s.xlsx' % (
                     REPORT_BASE_DIRECTORY,
