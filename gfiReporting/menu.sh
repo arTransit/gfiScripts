@@ -41,7 +41,7 @@ declare -A LOCLIST=(
 declare -A EXCEPTIONACTIONS=( 
     # use $'' notation for newlines
     [6]=$'Abbotsford:\nSend driver unclassified report to Gabe Colusso <gabe.colusso@firstgroup.com>' 
-    [19]=$'Chilliwack:\nSend Chilliwack MRS to\n Rod Sanderson <SANDERSO@chilliwack.com>; Jennifer Kooistra <kooistra@chilliwack.com>; Michelle McGrath <mcgrath@chilliwack.com>; Johann VanSchaik <Johann_VanSchaik@BCTransit.Com>\n\nSend Agassiz (just route 11) MRS to\n Alison Stewart <astewart@fvrd.bc.ca>; Barclay Pitkethly <bpitkethly@fvrd.bc.ca>;accountsreceivable@fvrd.bc.ca; Jennifer Kooistra <kooistra@chilliwack.com>; Mike Veenbaas <mveenbaas@fvrd.bc.ca>; Johann VanSchaik <Johann_VanSchaik@BCTransit.Com>'
+    [19]=$'Chilliwack:\nSend Chilliwack MRS to\n Rod Sanderson <SANDERSO@chilliwack.com>; Jennifer Kooistra <kooistra@chilliwack.com>; Johann VanSchaik <Johann_VanSchaik@BCTransit.Com>\n\nSend Agassiz (just route 11) MRS to\n Alison Stewart <astewart@fvrd.bc.ca>; Barclay Pitkethly <bpitkethly@fvrd.bc.ca>;accountsreceivable@fvrd.bc.ca; Jennifer Kooistra <kooistra@chilliwack.com>; Mike Veenbaas <mveenbaas@fvrd.bc.ca>; Johann VanSchaik <Johann_VanSchaik@BCTransit.Com>; Leigh Kreitner <kreitner@chilliwack.com>; Michelle McGrath <mcgrath@chilliwack.com>'
     [7]=$'Kelowna:\nSend driver unclassified report to Bill Harding <bill.harding@firstgroup.com>' 
     [4]=$'Squamish:\nSend driver key report to Christine Darling <christined@squamishtransit.pwt.ca>' 
     [17]=$'Vernon:\nSend MRS to Cindy Laidlaw <cindy.laidlaw@firstgroup.com>; Doreen Stanton <doreen.stanton@firstgroup.com>' 
