@@ -601,58 +601,83 @@ exceptionReportColumnWidth=12
 def exceptionReportSQL(location,year,month):
     """
     Return SQL for exception reports using location, year, and month attributes.
+    Note - do not include driver issues with kelowna (location #7) reports.
     """
-    
+
+    DRIVER_ONLY_LOCATIONS = [7]
+
     try:
         _location = ','.join([str(s) for s in location])
     except TypeError:
         _location = str(location)
+    if len(set(DRIVER_ONLY_LOCATIONS) & set(location)):
+        sql = (
+            "select bus,probetime,eventtime,route,drv,curr_r,rdr_c,wm_concat(issue) as issue "
+            "from ( "
+                "select  "
+                    "ml.bus,  "
+                    "TO_CHAR(ml.ts,'YYYY-MM-DD HH24:MI') probetime,  "
+                    "TO_CHAR(ev.ts,'YYYY-MM-DD HH24:MI') eventtime,  "
+                    "ev.route,ev.drv,ev.curr_r,ev.rdr_c,'route' issue  "
+                "from ml left join ev on ml.loc_n=ev.loc_n and ml.id=ev.id  "
+                "where   "
+                    "ev.route <> 99999 and "
+                    "ml.loc_n in ( %s ) and  "
+                    "ml.ts between (to_date('%s-%s-01', 'YYYY-MM-DD') -15) and last_day(to_date('%s-%s-01', 'YYYY-MM-DD'))+0.99999 and  "
+                    "ev.route not in (select route from rtelst where loc_n in (%s) ) and  "
+                    "((ev.curr_r >0) or (ev.rdr_c >0)) "
+            ") "
+            "group by bus,probetime,eventtime,route,drv,curr_r,rdr_c "
+            "order by bus,eventtime "
+            ) % (
+                    _location,str(year),str(month),str(year),str(month),_location)
+    else:
+        sql = (
+            "select bus,probetime,eventtime,route,drv,curr_r,rdr_c,wm_concat(issue) as issue "
+            "from ( "
+                "select  "
+                    "ml.bus,  "
+                    "TO_CHAR(ml.ts,'YYYY-MM-DD HH24:MI') probetime,  "
+                    "TO_CHAR(ev.ts,'YYYY-MM-DD HH24:MI') eventtime,  "
+                    "ev.route,ev.drv,ev.curr_r,ev.rdr_c,'route' issue  "
+                "from ml left join ev on ml.loc_n=ev.loc_n and ml.id=ev.id  "
+                "where   "
+                    "ev.route <> 99999 and "
+                    "ml.loc_n in ( %s ) and  "
+                    "ml.ts between (to_date('%s-%s-01', 'YYYY-MM-DD') -15) and last_day(to_date('%s-%s-01', 'YYYY-MM-DD'))+0.99999 and  "
+                    "ev.route not in (select route from rtelst where loc_n in (%s) ) and  "
+                    "((ev.curr_r >0) or (ev.rdr_c >0)) "
+                "union "
+                "select  "
+                    "ml.bus,  "
+                    "TO_CHAR(ml.ts,'YYYY-MM-DD HH24:MI') probetime, "
+                    "TO_CHAR(ev.ts,'YYYY-MM-DD HH24:MI') eventtime, "
+                    "ev.route,ev.drv,ev.curr_r,ev.rdr_c,'driver' issue  "
+                "from ml left join ev on ml.loc_n=ev.loc_n and ml.id=ev.id "
+                "where  "
+                    "ev.drv <> 99999 and "
+                    "ml.loc_n in ( %s ) and  "
+                    "ml.ts between (to_date('%s-%s-01', 'YYYY-MM-DD') -15) and "
+                            "last_day(to_date('%s-%s-01', 'YYYY-MM-DD'))+0.99999 and  "
+                    "ev.drv not in ( "
+                        "select drv "
+                        "from gfi_range left join "
+                            "(select rownum drv from all_objects where rownum < 9999) dids "
+                            "on dids.drv >= gfi_range.v1 and dids.drv <= gfi_range.v2 "
+                        "where gfi_range.loc_n in ( %s ) "
+                        "union "
+                        "select drv from drvlst where loc_n in ( %s ) "
+                    ") and "
+                    "((ev.curr_r >0) or (ev.rdr_c >0))  "
+            ") "
+            "group by bus,probetime,eventtime,route,drv,curr_r,rdr_c "
+            "order by bus,eventtime "
+            ) % (
+                    _location,str(year),str(month),str(year),str(month),_location,
+                    _location,str(year),str(month),str(year),str(month),
+                    _location,_location )
+    return sql
 
-
-    return (
-        "select bus,probetime,eventtime,route,drv,curr_r,rdr_c,wm_concat(issue) as issue "
-        "from ( "
-            "select  "
-                "ml.bus,  "
-                "TO_CHAR(ml.ts,'YYYY-MM-DD HH24:MI') probetime,  "
-                "TO_CHAR(ev.ts,'YYYY-MM-DD HH24:MI') eventtime,  "
-                "ev.route,ev.drv,ev.curr_r,ev.rdr_c,'route' issue  "
-            "from ml left join ev on ml.loc_n=ev.loc_n and ml.id=ev.id  "
-            "where   "
-                "ev.route <> 99999 and "
-                "ml.loc_n in ( %s ) and  "
-                "ml.ts between (to_date('%s-%s-01', 'YYYY-MM-DD') -15) and last_day(to_date('%s-%s-01', 'YYYY-MM-DD'))+0.99999 and  "
-                "ev.route not in (select route from rtelst where loc_n in (%s) ) and  "
-                "((ev.curr_r >0) or (ev.rdr_c >0)) "
-            "union "
-            "select  "
-                "ml.bus,  "
-                "TO_CHAR(ml.ts,'YYYY-MM-DD HH24:MI') probetime, "
-                "TO_CHAR(ev.ts,'YYYY-MM-DD HH24:MI') eventtime, "
-                "ev.route,ev.drv,ev.curr_r,ev.rdr_c,'driver' issue  "
-            "from ml left join ev on ml.loc_n=ev.loc_n and ml.id=ev.id "
-            "where  "
-                "ev.drv <> 99999 and "
-                "ml.loc_n in ( %s ) and  "
-                "ml.ts between (to_date('%s-%s-01', 'YYYY-MM-DD') -15) and "
-                        "last_day(to_date('%s-%s-01', 'YYYY-MM-DD'))+0.99999 and  "
-                "ev.drv not in ( "
-                    "select drv "
-                    "from gfi_range left join "
-                        "(select rownum drv from all_objects where rownum < 9999) dids "
-                        "on dids.drv >= gfi_range.v1 and dids.drv <= gfi_range.v2 "
-                    "where gfi_range.loc_n in ( %s ) "
-                    "union "
-                    "select drv from drvlst where loc_n in ( %s ) "
-                ") and "
-                "((ev.curr_r >0) or (ev.rdr_c >0))  "
-        ") "
-        "group by bus,probetime,eventtime,route,drv,curr_r,rdr_c "
-        "order by bus,eventtime "
-        ) % (
-                _location,str(year),str(month),str(year),str(month),_location,
-                _location,str(year),str(month),str(year),str(month),
-                _location,_location )
 
 
 
