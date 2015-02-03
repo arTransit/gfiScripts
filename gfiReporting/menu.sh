@@ -219,7 +219,18 @@ function chilliwack11Exception {
     python genChilliwackRoute11exception.py -y $QYEAR -m $QMONTH -c $QCONNECTION
     QDIR="."
     QLOC=19
+}
 
+
+function updateWKTdata {
+    echo -e "\nWest Kootenay (Trail) Ridership/Revenue Spreadsheet Updater"
+    ls *.xlsx
+    echo "Enter filename:"
+    read f
+    echo "python updateWKTdata.py -y $QYEAR -m $QMONTH -c $QCONNECTION -f \"$f\""
+    python updateWKTdata.py -y $QYEAR -m $QMONTH -c $QCONNECTION -f "$f"
+    QDIR="."
+    QLOC=11
 }
 
 
@@ -250,6 +261,7 @@ while : ; do
     echo "  [6] driver unclassified report (best & worst)"
     echo "  [7] driver key report"
     echo "  [8] Chilliwack/Agassiz monthly route summary report (MRSR)"
+    echo "  [9] West Kootenay (Trail) Spreadsheet updater"
     echo -n "--> "
     read x
 
@@ -271,6 +283,7 @@ while : ; do
         6) driverUnclassified;read x;; 
         7) driverKey;read x;; 
         8) chilliwackMRSR;read x;; 
+        9) updateWKTdata;read x;; 
         11) chilliwack11Exception;read x;; 
         *) echo "Huh?";
            echo "Press a key..."; read;;
