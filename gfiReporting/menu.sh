@@ -45,6 +45,7 @@ declare -A EXCEPTIONACTIONS=(
     [7]=$'Kelowna:\nSend driver unclassified report to Bill Harding <bill.harding@firstgroup.com>' 
     [4]=$'Squamish:\nSend driver key report to Christine Darling <christined@squamishtransit.pwt.ca>' 
     [17]=$'Vernon:\nSend MRS to Cindy Laidlaw <cindy.laidlaw@firstgroup.com>; Doreen Stanton <doreen.stanton@firstgroup.com>' 
+    [11]=$'Trail:\nUse West Kootenay Updater to update spreadsheet and forward to Daniel Pizarro.' 
     )
 
 
