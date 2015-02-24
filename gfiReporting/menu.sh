@@ -275,7 +275,7 @@ while : ; do
            QMONTH=${m:(-2)};;
         l) getLocation;;
         d) getDirectory;;
-        v) less "$GFILOG";;
+        v) less -i "$GFILOG";;
         1) logException;;
         2) logEvent;;
         3) monthlySummaryReport;read x;;
