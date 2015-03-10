@@ -7,7 +7,7 @@ QYEAR=$(date --date "last month" +"%Y")
 QLOC=1
 QDIR="."
 QCONNECTION="gfi/gfi@gfi"
-
+MONTHNAMES=(xxx Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec)
 
 declare -A LOCLIST=( 
     [1 2]="Victoria_Langford" 
@@ -41,11 +41,11 @@ declare -A LOCLIST=(
 declare -A EXCEPTIONACTIONS=( 
     # use $'' notation for newlines
     [6]=$'Abbotsford:\nSend driver unclassified report to Gabe Colusso <gabe.colusso@firstgroup.com>' 
-    [19]=$'Chilliwack:\nSend Chilliwack MRS to\n Rod Sanderson <SANDERSO@chilliwack.com>; Jennifer Kooistra <kooistra@chilliwack.com>; Johann VanSchaik <Johann_VanSchaik@BCTransit.Com>\n\nSend Agassiz (just route 11) MRS to\n Alison Stewart <astewart@fvrd.bc.ca>; Barclay Pitkethly <bpitkethly@fvrd.bc.ca>;accountsreceivable@fvrd.bc.ca; Jennifer Kooistra <kooistra@chilliwack.com>; Mike Veenbaas <mveenbaas@fvrd.bc.ca>; Johann VanSchaik <Johann_VanSchaik@BCTransit.Com>; Leigh Kreitner <kreitner@chilliwack.com>; Michelle McGrath <mcgrath@chilliwack.com>'
+    [19]=$'Chilliwack:\nSend Chilliwack MRS to:\nRod Sanderson <SANDERSO@chilliwack.com>; Jennifer Kooistra <kooistra@chilliwack.com>; Johann VanSchaik <Johann_VanSchaik@BCTransit.Com>\n\nSubject:GFI Monthly Summary Report - Chilliwack ${MONTHNAMES[$QMONTH]} $QYEAR\n\nPlease find attached the GFI Monthly Summary Report for Chilliwack - ${MONTHNAMES[$QMONTH]} $QYEAR\n\nSend Agassiz (just route 11) MRS to:\nAlison Stewart <astewart@fvrd.bc.ca>; Barclay Pitkethly <bpitkethly@fvrd.bc.ca>;accountsreceivable@fvrd.bc.ca; Jennifer Kooistra <kooistra@chilliwack.com>; Mike Veenbaas <mveenbaas@fvrd.bc.ca>; Johann VanSchaik <Johann_VanSchaik@BCTransit.Com>; Leigh Kreitner <kreitner@chilliwack.com>; Michelle McGrath <mcgrath@chilliwack.com>\n\nSubject:GFI Monthly Summary Report - Agassiz ${MONTHNAMES[$QMONTH]} $QYEAR\n\nPlease find attached the GFI Monthly Summary Report for Agassiz - ${MONTHNAMES[$QMONTH]} $QYEAR\n' 
     [7]=$'Kelowna:\nSend driver unclassified report to Bill Harding <bill.harding@firstgroup.com>' 
     [4]=$'Squamish:\nSend driver key report to Christine Darling <christined@squamishtransit.pwt.ca>' 
-    [17]=$'Vernon:\nSend MRS to Cindy Laidlaw <cindy.laidlaw@firstgroup.com>; Doreen Stanton <doreen.stanton@firstgroup.com>' 
-    [11]=$'Trail:\nUse West Kootenay Updater to update spreadsheet and forward to Daniel Pizarro.' 
+    [17]=$'Vernon:\nSend MRS to Cindy Laidlaw <cindy.laidlaw@firstgroup.com>; Doreen Stanton <doreen.stanton@firstgroup.com>\nBody: Please find attached the GFI Monthly Summary Report for Vernon ${MONTHNAMES[$QMONTH]} $QYEAR.' 
+    [11]=$'Trail:\nUse West Kootenay Updater to update spreadsheet and forward to \nDaniel Pizarro <daniel_pizarro@bctransit.com>; Randall Matheson <RMatheson@rdck.bc.ca>; John MacLean <jmaclean@rdkb.com>\n\nSubject:Ridership and Revenue Reports - WKT ${MONTHNAMES[$QMONTH]} $QYEAR\n\nPlease find attached the WKT GFI Ridership and Cash Revenue Report for ${MONTHNAMES[$QMONTH]} $QYEAR\n' 
     )
 
 
@@ -102,8 +102,8 @@ function logException {
         echo "$logline"
         echo "Thanks - these updates have been entered into the GFI database."
         echo
-        echo "${EXCEPTIONACTIONS[$QLOC]}"
-
+        eval "echo \"${EXCEPTIONACTIONS[$QLOC]}\""
+        echo
         echo "Generate MSR and MRSR?"
         read x
         if [ "$x" = 'y' ]; then
@@ -220,6 +220,11 @@ function chilliwack11Exception {
     python genChilliwackRoute11exception.py -y $QYEAR -m $QMONTH -c $QCONNECTION
     QDIR="."
     QLOC=19
+
+    echo -e "\nEmail"
+    echo "To: Lanine Matthews <Lanine.Matthews@firstgroup.com>"
+    echo "Subject: GFI route 11 exception report - $QMONTH $QYEAR"
+    echo "Please find attached the GFI route 11 exception report for $QMONTH $QYEAR."
 }
 
 
