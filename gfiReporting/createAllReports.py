@@ -43,7 +43,7 @@ reportingSystemList = [
         {'ids':[13],'name':'Port Alberni','email':['Phil Atkinson <phil@patransit.pwt.ca>']},
         {'ids':[15],'name':'Powell River','email':['Gerry Woods <gwoods@cdpr.bc.ca>']},
         {'ids':[9],'name':'Prince George','email':['Erik Madsen <erikm@pgtransit.pwt.ca>']},
-        {'ids':[23],'name':'Prince Rupert','email':['Darbara Minhas <darbara.minhas@firstgroup.com>']},
+        {'ids':[23],'name':'Prince Rupert','email':['Eric Fenato <eric.fenato@firstgroup.com>']},
         {'ids':[4],'name':'Squamish','email':['Christine Darling <christined@squamishtransit.pwt.ca>']},
         {'ids':[16],'name':'Sunshine','email':['Susan Fernandez <Susan.Fernandez@scrd.ca>']},
         {'ids':[22],'name':'Terrace','email':['Scott Crinson <Scott.Crinson@firstgroup.com>']},
