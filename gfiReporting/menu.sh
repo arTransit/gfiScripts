@@ -8,6 +8,8 @@ QLOC=1
 QDIR="."
 QCONNECTION="gfi/gfi@gfi"
 MONTHNAMES=(xxx Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec)
+EXCEPTIONREPORTDB="exceptionReport.db"
+
 
 declare -A LOCLIST=( 
     [1 2]="Victoria_Langford" 
@@ -89,6 +91,13 @@ function logThis {
 }
 
 
+function exceptionReportDB {
+    # argumenets locid,year,month
+
+    sqlite3 $EXCEPTIONREPORTDB "insert into exceptionreports(locid,year,month) values ($1,$2,$3)" || echo "DB insert failed"
+}
+
+
 function logException {
     local x
     local logline
@@ -100,6 +109,8 @@ function logException {
         logline=$(date +'%F %T')" Exception report update ${QYEAR}-${QMONTH} ${LOCLIST[$QLOC]} $x"
         logThis "$logline"
         echo "$logline"
+        exceptionReportDB "$QLOC" "$QYEAR" "$QMONTH" 
+
         echo "Thanks - these updates have been entered into the GFI database."
         echo
         eval "echo \"${EXCEPTIONACTIONS[$QLOC]}\""
