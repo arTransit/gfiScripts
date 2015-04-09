@@ -129,6 +129,13 @@ function logException {
 }
 
 
+function logExceptionReportsSent {
+    echo "Exception reports sent: $QYEAR, $QMONTH"
+    sqlite3 $EXCEPTIONREPORTDB "insert into exceptionreportsent(year,month) values ($QYEAR,$QMONTH)" || echo "DB insert failed"
+    read x
+}
+
+
 function logEvent {
     local x
     local logline
@@ -270,6 +277,7 @@ while : ; do
     echo "  [v] view log"
     echo "  --------------------------------------"
     echo "  [1] log exception report"
+    echo "  [e] exception reports sent"
     echo "  [2] log event"
     echo "  [3] monthly summary report"
     echo "  [4] monthly route summary report"
@@ -293,6 +301,7 @@ while : ; do
         d) getDirectory;;
         v) less -i "$GFILOG";;
         1) logException;;
+        e) logExceptionReportsSent;;
         2) logEvent;;
         3) monthlySummaryReport;read x;;
         4) monthlyRouteSummaryReport;read x;;
