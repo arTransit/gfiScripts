@@ -15,6 +15,7 @@ import generateMRSR
 import generateExceptionReport
 import smtplib
 import email, email.encoders,email.mime.text,email.mime.base
+import sqlite3
 
 
 SMTPSERVER = '10.170.3.119'
@@ -23,10 +24,11 @@ FROM_EMAIL = 'gfiReporting@bctransit.com'
 #REPORT_BASE_DIRECTORY='C:/Temp/GFIreporting'
 #REPORT_BASE_DIRECTORY='G:/Public/GFI/GFIreporting'
 REPORT_BASE_DIRECTORY='G:/Public/GFI'
+EXCEPTIONDB='./exceptionReport.db'
 
 
 reportingSystemList = [
-        {'ids':[1,2],'name':'Victoria_Langford','email':['gfiReporting@bctransit.com']},
+        #{'ids':[1,2],'name':'Victoria_Langford','email':['gfiReporting@bctransit.com']},
         {'ids':[6],'name':'Abbotsford','email':['Gabe Colusso <gabe.colusso@firstgroup.com>','Lanine Matthews<Lanine.Matthews@firstgroup.com>']},
         {'ids':[14],'name':'Campbell River','email':['Bill Richards <crtransit@shaw.ca>']},
         {'ids':[19],'name':'Chilliwack','email':['Gabe Colusso <gabe.colusso@firstgroup.com>','Lanine Matthews<Lanine.Matthews@firstgroup.com>']},
@@ -58,6 +60,7 @@ def getArgs():
     argsPsr.add_argument('-e','--email',action='store_true',default=False,help='flag to email reports')
     argsPsr.add_argument('-a','--all',action='store_true',default=False,help='create all reports')
     argsPsr.add_argument('-x','--exception',action='store_true',default=False,help='create exception reports')
+    argsPsr.add_argument('--reminder',action='store_true',default=False,help='send exception report reminder')
     argsPsr.add_argument('-r','--mrsr',action='store_true',default=False,help='create month route summary reports')
     argsPsr.add_argument('-s','--msr',action='store_true',default=False,help='create month summary reports')
     argsPsr.add_argument('-y','--year',required=True,type=int,help='eg 2014')
@@ -83,7 +86,7 @@ def makePath(path):
             raise
 
 
-def emailReport(emailTo,emailFrom,emailSubject,emailBody,filepath):
+def emailReport(emailTo,emailFrom,emailSubject,emailBody,filepaths):
     emailMsg = email.MIMEMultipart.MIMEMultipart('alternative')
     emailMsg['Subject'] = emailSubject
     emailMsg['From'] = emailFrom
@@ -92,17 +95,28 @@ def emailReport(emailTo,emailFrom,emailSubject,emailBody,filepath):
     emailMsg.attach(email.mime.text.MIMEText(emailBody,'html'))
 
     # attach file
-    filename = os.path.basename(filepath)
-    fileMsg = email.mime.base.MIMEBase('application','octet-stream')
-    fileMsg.set_payload(open(filepath,'rb').read() )
-    email.encoders.encode_base64(fileMsg)
-    fileMsg.add_header('Content-Disposition','attachment;filename=%s' % filename)
-    emailMsg.attach(fileMsg)
+    for f in filepaths:
+        filename = os.path.basename(f)
+        fileMsg = email.mime.base.MIMEBase('application','octet-stream')
+        fileMsg.set_payload(open(f,'rb').read() )
+        email.encoders.encode_base64(fileMsg)
+        fileMsg.add_header('Content-Disposition','attachment;filename=%s' % filename)
+        emailMsg.attach(fileMsg)
 
+    print "sending email"
+    return
     # send email
     server = smtplib.SMTP(SMTPSERVER)
     server.sendmail(emailFrom,emailTo,emailMsg.as_string())
     server.quit()
+
+
+def dict_factory(cursor, row):
+    d = {}
+    for idx, col in enumerate(cursor.description):
+        d[col[0]] = row[idx]
+    return d
+
 
 
 if __name__ == '__main__':
@@ -110,7 +124,6 @@ if __name__ == '__main__':
     if args.error:
         print "Arguement error"
         sys.exit(1)
-
 
 
     # make directories
@@ -166,9 +179,9 @@ if __name__ == '__main__':
                 emailReport(
                         s['email'],
                         FROM_EMAIL,
-                        'GFI Monthly Exception Report - %s, %s %d' % (s['name'],calendar.month_name[args.month],args.year),
+                        'GFI: outstanding exception reports',
                         emailBody,
-                        _filename)
+                        [_filename])
     else:
         print "No Monthly Exception Reports"
     print '\n\n'
@@ -215,6 +228,64 @@ if __name__ == '__main__':
     else:
         print "No Monthly Route Summary Reports"
     print '\n\n'
+
+    if args.reminder:
+        print "Generating Reminders"
+        systemList = {x['ids'][0]:x for x in reportingSystemList}
+
+        con = sqlite3.connect(EXCEPTIONDB)
+        con.row_factory = dict_factory
+        cur = con.cursor()
+        cur.execute('select locid,year,month from v_exceptionreportsmissing')
+
+        missingReports = {}
+        for row in cur.fetchall():
+            if row['locid'] in systemList.keys():
+                try:
+                    missingReports[row['locid']].append({'year':row['year'],'month':row['month']})
+                except KeyError:
+                    missingReports[row['locid']] = [{'year':row['year'],'month':row['month']}]
+            else:
+                print "ERROR: %d not in system list" % row['locid']
+
+        con.close()
+
+        for k in missingReports.keys():
+            print systemList[k]
+
+            _filenames=[]
+            for r in missingReports[k]:
+                _filename = '%s/%s/%s_GFImonthlyExceptionReport_%s_%s.xlsx' % (
+                        REPORT_BASE_DIRECTORY,
+                        systemList[k]['name'],
+                        systemList[k]['name'],
+                        str(r['year']),
+                        ''.join(['000',str(r['month'])])[-2:])
+                if os.path.isfile(_filename):
+                    _filenames.append(_filename)
+                else:
+                    print "ERROR: missing exception report %s" % _filename
+
+            emailBody = (
+                    '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" '
+                    '"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml">'
+                    '<body style="font-size:12px;font-family:Tahoma">'
+                    '<p>Please complete outstanding reprts (attached).'
+                    '<p>Thanks.</p>'
+                    '<p>The GFI Reporting Team.</p>'
+                    '</body></html>' )
+            emailReport(
+                    #systemList[k]['email'],
+                    ['gfiReports@bctransit.com'],
+                    FROM_EMAIL,
+                    'GFI Monthly Exception Report - %s, %s %d' % (s['name'],calendar.month_name[args.month],args.year),
+                    emailBody,
+                    _filenames)
+
+    else:
+        print "No Reminders"
+    print '\n\n'
+        
 
     print "Completed."
     sys.exit(0)
