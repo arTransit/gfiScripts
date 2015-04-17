@@ -48,6 +48,7 @@ declare -A EXCEPTIONACTIONS=(
     [4]=$'Squamish:\nSend driver key report to Christine Darling <christined@squamishtransit.pwt.ca>' 
     [17]=$'Vernon:\nSend MRS to Cindy Laidlaw <cindy.laidlaw@firstgroup.com>; Doreen Stanton <doreen.stanton@firstgroup.com>\nBody: Please find attached the GFI Monthly RouteSummary Report for Vernon ${MONTHNAMES[$QMONTH]} $QYEAR.' 
     [11]=$'Trail:\nUse West Kootenay Updater to update spreadsheet and forward to \nDaniel Pizarro <daniel_pizarro@bctransit.com>; Randall Matheson <RMatheson@rdck.bc.ca>; John MacLean <jmaclean@rdkb.com>\n\nSubject:Ridership and Revenue Reports - WKT ${MONTHNAMES[$QMONTH]} $QYEAR\n\nPlease find attached the WKT GFI Ridership and Cash Revenue Report for ${MONTHNAMES[$QMONTH]} $QYEAR\n' 
+    [3]=$'Whistler:\nSend MRSR to  \nEmma DalSanto <EDalSanto@whistler.ca>; Peter DeJong <PDeJong@slrd.bc.ca> \n\nSubject:GFI Whistler: Monthly Route Summary Report ${MONTHNAMES[$QMONTH]} $QYEAR\n\nPlease find attached the GFI Whislter Monthly Route Summary Report for ${MONTHNAMES[$QMONTH]} $QYEAR\n' 
     )
 
 
