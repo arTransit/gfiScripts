@@ -87,11 +87,14 @@ def makePath(path):
 
 
 def emailReport(emailTo,emailFrom,emailSubject,emailBody,filepaths):
+
+    _bcc = ['gfiReporting@bctransit.com']
+    
     emailMsg = email.MIMEMultipart.MIMEMultipart('alternative')
     emailMsg['Subject'] = emailSubject
     emailMsg['From'] = emailFrom
     emailMsg['To'] = ', '.join(emailTo)
-    emailMsg['Bcc'] = 'gfireporting@bctransit.com'
+    emailMsg['Bcc'] = ', '.join(_bcc)
     emailMsg.attach(email.mime.text.MIMEText(emailBody,'html'))
 
     # attach file
@@ -103,11 +106,9 @@ def emailReport(emailTo,emailFrom,emailSubject,emailBody,filepaths):
         fileMsg.add_header('Content-Disposition','attachment;filename=%s' % filename)
         emailMsg.attach(fileMsg)
 
-    print "sending email"
-    return
     # send email
     server = smtplib.SMTP(SMTPSERVER)
-    server.sendmail(emailFrom,emailTo,emailMsg.as_string())
+    server.sendmail(emailFrom,emailTo + _bcc,emailMsg.as_string())
     server.quit()
 
 
@@ -251,9 +252,10 @@ if __name__ == '__main__':
         con.close()
 
         for k in missingReports.keys():
-            print systemList[k]
+            print systemList[k]['name']
 
             _filenames=[]
+            _reportList = ''
             for r in missingReports[k]:
                 _filename = '%s/%s/%s_GFImonthlyExceptionReport_%s_%s.xlsx' % (
                         REPORT_BASE_DIRECTORY,
@@ -263,6 +265,10 @@ if __name__ == '__main__':
                         ''.join(['000',str(r['month'])])[-2:])
                 if os.path.isfile(_filename):
                     _filenames.append(_filename)
+                    _reportList+='<li>%s %d</li>' % ( 
+                            ('January','February','March','April','May','June',
+                            'July','August','September','October','November','December')[r['month'] -1],
+                            r['year'])
                 else:
                     print "ERROR: missing exception report %s" % _filename
 
@@ -270,15 +276,18 @@ if __name__ == '__main__':
                     '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" '
                     '"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml">'
                     '<body style="font-size:12px;font-family:Tahoma">'
-                    '<p>Please complete outstanding reprts (attached).'
-                    '<p>Thanks.</p>'
+                    '<p>The following GFI exception reports have not been received:'
+                    '<ul>'
+                    '%s'
+                    '</ul>'
+                    'If you have already sent them, would you please send them again, otherwise kindly complete them as soon as possible.'
+                    '<p>Thanks,</p>'
                     '<p>The GFI Reporting Team.</p>'
-                    '</body></html>' )
+                    '</body></html>' ) % _reportList
             emailReport(
-                    #systemList[k]['email'],
-                    ['gfiReports@bctransit.com'],
+                    systemList[k]['email'],
                     FROM_EMAIL,
-                    'GFI Monthly Exception Report - %s, %s %d' % (s['name'],calendar.month_name[args.month],args.year),
+                    'GFI: %s outstanding exception reports' % systemList[k]['name'],
                     emailBody,
                     _filenames)
 
