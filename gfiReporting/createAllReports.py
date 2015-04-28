@@ -21,38 +21,11 @@ import sqlite3
 SMTPSERVER = '10.170.3.119'
 FROM_EMAIL = 'gfiReporting@bctransit.com'
 #REPORT_BASE_DIRECTORY='G:/BusinessIntelligence/Temp/GFIreporting/'
-#REPORT_BASE_DIRECTORY='C:/Temp/GFIreporting'
+REPORT_BASE_DIRECTORY='C:/Temp/GFIreporting'
 #REPORT_BASE_DIRECTORY='G:/Public/GFI/GFIreporting'
-REPORT_BASE_DIRECTORY='G:/Public/GFI'
+#REPORT_BASE_DIRECTORY='G:/Public/GFI'
 EXCEPTIONDB='./exceptionReport.db'
 
-
-reportingSystemList = [
-        #{'ids':[1,2],'name':'Victoria_Langford','email':['gfiReporting@bctransit.com']},
-        {'ids':[6],'name':'Abbotsford','email':['Gabe Colusso <gabe.colusso@firstgroup.com>','Lanine Matthews<Lanine.Matthews@firstgroup.com>']},
-        {'ids':[14],'name':'Campbell River','email':['Bill Richards <crtransit@shaw.ca>']},
-        {'ids':[19],'name':'Chilliwack','email':['Gabe Colusso <gabe.colusso@firstgroup.com>','Lanine Matthews<Lanine.Matthews@firstgroup.com>']},
-        {'ids':[12],'name':'Comox','email':['Darren Richards <watsonandash@shaw.ca>']},
-        {'ids':[10],'name':'Duncan','email':['Colin Oakes <colin.oakes@firstgroup.com>']},
-        {'ids':[20],'name':'Cranbrook','email':['Lynda Lawrence <lynda@suncity.bc.ca>','John Darula <john.darula@suncity.bc.ca>']},
-        {'ids':[25],'name':'FSJ','email':['Shelley Lindaas <shelleyl@peacetransit.pwt.ca>']},
-        {'ids':[8],'name':'Kamloops','email':['Bart Carrigan <bart.carrigan@firstgroup.com>','Wanda McDonnell <wanda.mcdonnell@firstgroup.com>']},
-        {'ids':[7],'name':'Kelowna','email':['Alanna Zaharko <alanna.zaharko@firstgroup.com>']},
-        {'ids':[24],'name':'Kitimat','email':['Phil Malnis <phil.malnis@firstgroup.com>']},
-        {'ids':[5],'name':'Nanaimo','email':['Darren Marshall <dmarshall@rdn.bc.ca>','David Stowell-Smith <dstowell-smith@rdn.bc.ca>','David StowellSmith <DStowellSmith@rdn.bc.ca>','Dave Sakai <dsakai@rdn.bc.ca>','Jamie Logan <JLogan@rdn.bc.ca>']},
-        {'ids':[21],'name':'Nelson','email':['Gerry Tennant <GTennant@nelson.ca>']},
-        {'ids':[18],'name':'Penticton','email':['Mike Palosky <mikepalosky@berryandsmith.com>']},
-        {'ids':[13],'name':'Port Alberni','email':['Phil Atkinson <phil@patransit.pwt.ca>']},
-        {'ids':[15],'name':'Powell River','email':['Gerry Woods <gwoods@cdpr.bc.ca>']},
-        {'ids':[9],'name':'Prince George','email':['Erik Madsen <erikm@pgtransit.pwt.ca>']},
-        {'ids':[23],'name':'Prince Rupert','email':['Eric Fenato <eric.fenato@firstgroup.com>']},
-        {'ids':[4],'name':'Squamish','email':['Colin Hoffmann <colinh@squamishtransit.pwt.ca>']},
-        {'ids':[16],'name':'Sunshine','email':['Susan Fernandez <Susan.Fernandez@scrd.ca>']},
-        {'ids':[22],'name':'Terrace','email':['Scott Crinson <Scott.Crinson@firstgroup.com>']},
-        {'ids':[11],'name':'Trail','email':['Sharman Thomas <sharman.trailtransit@shawlink.ca>']},
-        {'ids':[17],'name':'Vernon','email':['Cindy Laidlaw <cindy.laidlaw@firstgroup.com>','Doreen Stanton <doreen.stanton@firstgroup.com>']},
-        {'ids':[3],'name':'Whistler','email':['Steve Antil <steve@whistlertransit.ca>']}
-    ]
 
 
 def getArgs():
@@ -127,12 +100,25 @@ if __name__ == '__main__':
         sys.exit(1)
 
 
+    # create locationList
+    con = sqlite3.connect(EXCEPTIONDB)
+    con.row_factory = dict_factory
+    cur = con.cursor()
+    cur.execute('select locid,locname,directoryname,email from v_contacts_local')
+
+
+    systemList = {}
+    for l in cur.fetchall():
+        systemList[l['locid']] = {
+                'locname':l['locname'],
+                'directoryname':l['directoryname'],
+                'email':l['email'].split(';')}
+
     # make directories
-    for s in reportingSystemList:
-        makePath(REPORT_BASE_DIRECTORY + '/' + s['name'])
+    for l in systemList.keys():
+        makePath(REPORT_BASE_DIRECTORY + '/' + systemList[l]['directoryname'])
 
     # Exception Reports
-
     if args.all or args.exception:
         print "Generating Monthly Exception Reports"
         print "  Year:%s\n  Month:%s" % (str(args.year),str(args.month))
@@ -141,19 +127,19 @@ if __name__ == '__main__':
         else:
             print "  no email"
 
-        for s in reportingSystemList:
+        for l in systemList.keys():
             #sys.stdout.write('. ')
-            sys.stdout.write(s['name'])
+            sys.stdout.write(systemList[l]['locname'])
             sys.stdout.write('\n')
             sys.stdout.flush()
             _filename = '%s/%s/%s_GFImonthlyExceptionReport_%s_%s.xlsx' % (
                     REPORT_BASE_DIRECTORY,
-                    s['name'],
-                    s['name'],
+                    systemList[l]['locname'],
+                    systemList[l]['locname'],
                     str(args.year),
                     ''.join(['000',str(args.month)])[-2:])
 
-            generateExceptionReport.createReport(s['ids'],args.year,args.month,_filename,args.connection)
+            generateExceptionReport.createReport( [l],args.year,args.month,_filename,args.connection)
 
             if args.email:
                 emailBody = (
@@ -176,11 +162,11 @@ if __name__ == '__main__':
                         '<p>If you need any GFI reports for specific routes, times of day, periods, etc., please email GFIreporting@bctransit.com</p>'
                         '<p>Thanks.</p>'
                         '<p>The GFI Reporting Team.</p>'
-                        '</body></html>' ) % (s['name'],calendar.month_name[args.month],str(args.year))
+                        '</body></html>' ) % (systemList[l]['locname'],calendar.month_name[args.month],str(args.year))
                 emailReport(
-                        s['email'],
+                        systemList[l]['email'],
                         FROM_EMAIL,
-                        'GFI: outstanding exception reports',
+                        'GFI: %s exception report' % systemList[l]['locname'],
                         emailBody,
                         [_filename])
     else:
@@ -194,16 +180,16 @@ if __name__ == '__main__':
         print "Generating Monthly Summary Reports"
         print "  Year:%s\n  Month:%s" % (str(args.year),str(args.month))
 
-        for s in reportingSystemList:
+        for l in systemList.keys():
             sys.stdout.write('. ')
             sys.stdout.flush()
             _filename = '%s/%s/%s_GFImonthlySummaryReport%s_%s.xlsx' % (
                     REPORT_BASE_DIRECTORY,
-                    s['name'],
-                    s['name'],
+                    systemList[l]['locname'],
+                    systemList[l]['locname'],
                     str(args.year),
                     ''.join(['000',str(args.month)])[-2:])
-            generateMSR.createReport(s['ids'],args.year,args.month,_filename,args.connection)
+            generateMSR.createReport([l],args.year,args.month,_filename,args.connection)
     else:
         print "No Monthly Summary Reports"
     print '\n\n'
@@ -215,16 +201,16 @@ if __name__ == '__main__':
         print "Generating Monthly Route Summary Reports"
         print "  Year:%s\n  Month:%s" % (str(args.year),str(args.month))
 
-        for s in reportingSystemList:
+        for l in systemList.keys():
             sys.stdout.write('. ')
             sys.stdout.flush()
             _filename = '%s/%s/%s_GFImonthlyRouteSummaryReport_%s_%s.xlsx' % (
                     REPORT_BASE_DIRECTORY,
-                    s['name'],
-                    s['name'],
+                    systemList[l]['locname'],
+                    systemList[l]['locname'],
                     str(args.year),
                     ''.join(['000',str(args.month)])[-2:])
-            generateMRSR.createReport(s['ids'],args.year,args.month,_filename,args.connection)
+            generateMRSR.createReport([l],args.year,args.month,_filename,args.connection)
 
     else:
         print "No Monthly Route Summary Reports"
@@ -232,11 +218,16 @@ if __name__ == '__main__':
 
     if args.reminder:
         print "Generating Reminders"
-        systemList = {x['ids'][0]:x for x in reportingSystemList}
+        # systemList = {x['ids'][0]:x for x in reportingSystemList}
 
-        con = sqlite3.connect(EXCEPTIONDB)
-        con.row_factory = dict_factory
-        cur = con.cursor()
+        cur.execute('select locid,locname,directoryname,email from v_contacts_all')
+        systemList = {}
+        for l in cur.fetchall():
+            systemList[l['locid']] = {
+                    'locname':l['locname'],
+                    'directoryname':l['directoryname'],
+                    'email':l['email'].split(';')}
+            
         cur.execute('select locid,year,month from v_exceptionreportsmissing')
 
         missingReports = {}
@@ -249,18 +240,16 @@ if __name__ == '__main__':
             else:
                 print "ERROR: %d not in system list" % row['locid']
 
-        con.close()
-
         for k in missingReports.keys():
-            print systemList[k]['name']
+            print systemList[k]['locname']
 
             _filenames=[]
             _reportList = ''
             for r in missingReports[k]:
                 _filename = '%s/%s/%s_GFImonthlyExceptionReport_%s_%s.xlsx' % (
                         REPORT_BASE_DIRECTORY,
-                        systemList[k]['name'],
-                        systemList[k]['name'],
+                        systemList[k]['locname'],
+                        systemList[k]['locname'],
                         str(r['year']),
                         ''.join(['000',str(r['month'])])[-2:])
                 if os.path.isfile(_filename):
@@ -287,7 +276,7 @@ if __name__ == '__main__':
             emailReport(
                     systemList[k]['email'],
                     FROM_EMAIL,
-                    'GFI: %s outstanding exception reports' % systemList[k]['name'],
+                    'GFI: %s outstanding exception reports' % systemList[k]['locname'],
                     emailBody,
                     _filenames)
 
@@ -296,6 +285,7 @@ if __name__ == '__main__':
     print '\n\n'
         
 
+    con.close()
     print "Completed."
     sys.exit(0)
 
