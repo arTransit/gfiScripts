@@ -132,6 +132,8 @@ function logException {
 
 function logExceptionReportsSent {
     echo "Exception reports sent: $QYEAR, $QMONTH"
+    logline=$(date +'%F %T')" Exception reports sent ${QYEAR}-${QMONTH}"
+    logThis "$logline"
     sqlite3 $EXCEPTIONREPORTDB "insert into exceptionreportsent(year,month) values ($QYEAR,$QMONTH)" || echo "DB insert failed"
     read x
 }

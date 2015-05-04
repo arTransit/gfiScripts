@@ -134,8 +134,8 @@ if __name__ == '__main__':
             sys.stdout.flush()
             _filename = '%s/%s/%s_GFImonthlyExceptionReport_%s_%s.xlsx' % (
                     REPORT_BASE_DIRECTORY,
-                    systemList[l]['locname'],
-                    systemList[l]['locname'],
+                    systemList[l]['directoryname'],
+                    systemList[l]['directoryname'],
                     str(args.year),
                     ''.join(['000',str(args.month)])[-2:])
 
@@ -185,8 +185,8 @@ if __name__ == '__main__':
             sys.stdout.flush()
             _filename = '%s/%s/%s_GFImonthlySummaryReport%s_%s.xlsx' % (
                     REPORT_BASE_DIRECTORY,
-                    systemList[l]['locname'],
-                    systemList[l]['locname'],
+                    systemList[l]['directoryname'],
+                    systemList[l]['directoryname'],
                     str(args.year),
                     ''.join(['000',str(args.month)])[-2:])
             generateMSR.createReport([l],args.year,args.month,_filename,args.connection)
@@ -206,8 +206,8 @@ if __name__ == '__main__':
             sys.stdout.flush()
             _filename = '%s/%s/%s_GFImonthlyRouteSummaryReport_%s_%s.xlsx' % (
                     REPORT_BASE_DIRECTORY,
-                    systemList[l]['locname'],
-                    systemList[l]['locname'],
+                    systemList[l]['directoryname'],
+                    systemList[l]['directoryname'],
                     str(args.year),
                     ''.join(['000',str(args.month)])[-2:])
             generateMRSR.createReport([l],args.year,args.month,_filename,args.connection)
@@ -248,8 +248,8 @@ if __name__ == '__main__':
             for r in missingReports[k]:
                 _filename = '%s/%s/%s_GFImonthlyExceptionReport_%s_%s.xlsx' % (
                         REPORT_BASE_DIRECTORY,
-                        systemList[k]['locname'],
-                        systemList[k]['locname'],
+                        systemList[k]['directoryname'],
+                        systemList[k]['directoryname'],
                         str(r['year']),
                         ''.join(['000',str(r['month'])])[-2:])
                 if os.path.isfile(_filename):
